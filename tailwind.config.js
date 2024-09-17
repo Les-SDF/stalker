@@ -4,7 +4,10 @@ const colors = require("tailwindcss/colors");
 module.exports = {
     // Scan templates files to delete unused style and generate optimal CSS file
     darkMode: "class",
-    content: ["./src/templates/*.twig"],
+    content: [
+        "./assets/**/*.js",
+        "./templates/**/*.twig"
+    ],
     theme: {
         extend: {
             colors: {
