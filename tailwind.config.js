@@ -12,9 +12,9 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                primary: colors.green,
-                secondary: colors.red,
-                neutral: colors.sky,
+                primary: colors.indigo,
+                secondary: colors.rose,
+                neutral: colors.slate,
                 font: colors.gray,
             },
         },
