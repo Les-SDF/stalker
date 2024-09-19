@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\UserSignUpType;
+use App\Form\SignUpType;
 use App\Service\FlashMessageHelperInterface;
 use App\Service\UserManagerInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,7 +24,7 @@ class UserController extends AbstractController
             return $this->redirectToRoute('feed');
         }
         $user = new User();
-        $form = $this->createForm(UserSignUpType::class, $user, [
+        $form = $this->createForm(SignUpType::class, $user, [
             'method' => 'POST',
             'action' => $this->generateURL('signUp')
         ]);
