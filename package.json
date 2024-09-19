@@ -12,5 +12,8 @@
     "dev-server": "encore dev-server",
     "build": "encore production",
     "watch": "encore dev --watch"
+  },
+  "dependencies": {
+    "flowbite": "^2.5.1"
   }
 }
