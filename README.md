@@ -4,7 +4,13 @@
 
 # Mettre en place le projet
 
-On fera une image Docker pour le projet. (on espère)
+```shell
+php bin/console doctrine:schema:update
+```
+
+```shell
+npm run watch
+```
 
 # Investissement de chacun
 
@@ -16,6 +22,6 @@ On fera une image Docker pour le projet. (on espère)
   - Tout.
 
 # Routes de l'application
-- [`/`](http://localhost:80/) : Page d'accueil
-- [`/sign-up`](http://localhost:80/sign-up) : Page d'inscription
-- [`/sign-in`](http://localhost:80/sign-in) : Page de connexion
+- [`GET` `/`](http://localhost:80/anuary/public/) : Page d'accueil
+- [`POST` `/sign-up`](http://localhost:80/anuary/public/sign-up) : Action d'inscription
+- [`POST` `/sign-in`](http://localhost:80/anuary/public/sign-in) : Action de connexion
