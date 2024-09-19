@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Enum\Gender;
+use App\Enum\Visibility;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -35,6 +36,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(enumType: Gender::class)]
     private ?Gender $gender = null;
+
+    #[ORM\Column(enumType: Visibility::class)]
+    private ?Visibility $visibility = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $defaultProfileCode = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $customProfileCode = null;
 
     public function getId(): ?int
     {
@@ -119,6 +129,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setGender(Gender $gender): static
     {
         $this->gender = $gender;
+
+        return $this;
+    }
+
+    public function getVisibility(): ?Visibility
+    {
+        return $this->visibility;
+    }
+
+    public function setVisibility(Visibility $visibility): static
+    {
+        $this->visibility = $visibility;
+
+        return $this;
+    }
+
+    public function getDefaultProfileCode(): ?string
+    {
+        return $this->defaultProfileCode;
+    }
+
+    public function setDefaultProfileCode(string $defaultProfileCode): static
+    {
+        $this->defaultProfileCode = $defaultProfileCode;
+
+        return $this;
+    }
+
+    public function getCustomProfileCode(): ?string
+    {
+        return $this->customProfileCode;
+    }
+
+    public function setCustomProfileCode(string $customProfileCode): static
+    {
+        $this->customProfileCode = $customProfileCode;
 
         return $this;
     }
