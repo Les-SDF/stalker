@@ -15,4 +15,11 @@ import './bootstrap';
 // enable the interactive UI components from Flowbite
 import 'flowbite';
 
+import { createIcons, icons } from 'lucide';
+
+// Initialize Lucide
+document.addEventListener('DOMContentLoaded', () => {
+    createIcons({ icons });
+});
+
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
