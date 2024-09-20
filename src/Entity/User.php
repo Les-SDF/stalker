@@ -5,11 +5,15 @@ namespace App\Entity;
 use App\Enum\Gender;
 use App\Enum\Visibility;
 use App\Repository\UserRepository;
+use App\Service\RandomStringGeneratorInterface;
+use Random\RandomException;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -20,6 +24,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 254)]
+    #[Assert\Email(message: "The email '{{ value }}' is not a valid email.")]
+    #[Assert\NotBlank]
+    #[Assert\NotNull]
     private ?string $email = null;
 
     /**
@@ -32,9 +39,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\Regex(
+        pattern: "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).+$/",
+        message: "The password must contain at least one lowercase letter, one uppercase letter and one digit"
+    )]
+    #[Assert\Length(
+        min: 8,
+        max: 128,
+        minMessage: "The password must be at least 8 characters long",
+        maxMessage: "The password must be at most 128 characters long"
+    )]
     private ?string $password = null;
 
-    #[ORM\Column(enumType: Gender::class)]
+    #[ORM\Column(type: "string", enumType: Gender::class)]
     private ?Gender $gender = null;
 
     #[ORM\Column(enumType: Visibility::class)]
@@ -45,6 +62,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $customProfileCode = null;
+
+    /**
+     * @throws RandomException
+     */
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        if ($this->visibility === null) {
+            $this->visibility = Visibility::Public;
+        }
+        if ($this->gender === null) {
+            $this->gender = Gender::Unspecified;
+        }
+        // Il serait mieux d'utiliser un meilleur moyen générer cette chaîne
+        // Avec la classe RandomStringGenerator par exmeple
+        $this->defaultProfileCode = bin2hex(random_bytes(16));
+    }
 
     public function getId(): ?int
     {
