@@ -18,10 +18,10 @@ readonly class UserManager implements UserManagerInterface
     }
 
     public function hashPassword(User    $user,
-                                 ?string $plainPassword): void
+                                 ?string $password): void
     {
         $user->setPassword(
-            $this->passwordHasher->hashPassword($user, $plainPassword)
+            $this->passwordHasher->hashPassword($user, $password)
         );
     }
 

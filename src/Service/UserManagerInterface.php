@@ -13,11 +13,11 @@ interface UserManagerInterface
      * Hashes the password of the given user.
      *
      * @param User $user
-     * @param string|null $plainPassword
+     * @param string|null $password
      * @param UserPasswordHasherInterface $passwordHasher
      * @return void
      */
-    public function hashPassword(User $user, ?string $plainPassword): void;
+    public function hashPassword(User $user, ?string $password): void;
 
     /**
      * Stores the profile picture of the given user.
