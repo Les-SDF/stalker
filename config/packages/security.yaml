@@ -18,8 +18,14 @@ security:
             lazy: true
             provider: app_user_provider
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
+            form_login:
+                login_path: sign_in # peut-être mettre homepage ici
+                check_path: sign_in
+                username_parameter: email
+                password_parameter: password
+                default_target_path: homepage
+                always_use_default_target_path: true
+                enable_csrf: true
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
