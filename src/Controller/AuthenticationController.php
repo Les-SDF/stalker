@@ -23,6 +23,7 @@ class AuthenticationController extends AbstractController
                            FlashMessageHelperInterface $flashMessageHelper): Response
     {
         if ($this->isGranted('ROLE_USER')) {
+            $this->addFlash("warning", "You are already signed in.");
             return $this->redirectToRoute('homepage');
         }
         $user = new User();
@@ -40,7 +41,7 @@ class AuthenticationController extends AbstractController
             );
             $entityManager->persist($user);
             $entityManager->flush();
-            $this->addFlash('success', 'Vous êtes inscrit');
+            $this->addFlash('success', 'You are signed up.');
 //        $currentRoute = $request->attributes->get('_route');
             return $this->redirectToRoute('homepage');
         } else {
@@ -61,6 +62,7 @@ class AuthenticationController extends AbstractController
     public function signIn(AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->isGranted("ROLE_USER")) {
+            $this->addFlash("warning", "You are already signed in.");
             return $this->redirectToRoute("homepage");
         }
         // on doit récupérer la route depuis laquelle cette méthode a été appelée,
