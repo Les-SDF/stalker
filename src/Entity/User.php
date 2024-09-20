@@ -7,6 +7,7 @@ use App\Enum\Visibility;
 use App\Repository\UserRepository;
 use App\Service\RandomStringGeneratorInterface;
 use Random\RandomException;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -16,6 +17,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[UniqueEntity(fields: ["email"], message: "The email {{ value }} is already used")]
+#[UniqueEntity(fields: ["defaultProfileCode"], message: "The default profile code {{ value }} is already used")]
+#[UniqueEntity(fields: ["customProfileCode"], message: "The custom profile code {{ value }} is already used")]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -39,16 +43,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Assert\Regex(
-        pattern: "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).+$/",
-        message: "The password must contain at least one lowercase letter, one uppercase letter and one digit"
-    )]
-    #[Assert\Length(
-        min: 8,
-        max: 128,
-        minMessage: "The password must be at least 8 characters long",
-        maxMessage: "The password must be at most 128 characters long"
-    )]
+//    #[Assert\Regex(
+//        pattern: "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).+$/",
+//        message: "The password must contain at least one lowercase letter, one uppercase letter and one digit"
+//    )]
+//    #[Assert\Length(
+//        min: 8,
+//        max: 128,
+//        minMessage: "The password must be at least 8 characters long",
+//        maxMessage: "The password must be at most 128 characters long"
+//    )]
     private ?string $password = null;
 
     #[ORM\Column(type: "string", enumType: Gender::class)]
@@ -61,6 +65,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $defaultProfileCode = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(
+        min: 4,
+        max: 255,
+        minMessage: "The custom profile code must be at least 4 characters long",
+        maxMessage: "The custom profile code must be at most 255 characters long"
+    )]
     private ?string $customProfileCode = null;
 
     /**
@@ -76,8 +86,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->gender = Gender::Unspecified;
         }
         // Il serait mieux d'utiliser un meilleur moyen générer cette chaîne
-        // Avec la classe RandomStringGenerator par exmeple
-        $this->defaultProfileCode = bin2hex(random_bytes(16));
+        // Avec la classe RandomStringGenerator par exemple
+        $this->defaultProfileCode = uniqid(more_entropy: true);
     }
 
     public function getId(): ?int

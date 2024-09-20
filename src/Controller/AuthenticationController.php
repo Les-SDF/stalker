@@ -12,10 +12,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-class AccountController extends AbstractController
+class AuthenticationController extends AbstractController
 {
-    #[Route('/sign-up', name: 'sign_up', methods: ['GET', 'POST'])]
+    #[Route('/sign-up', name: 'sign_up', methods: ['POST'])]
     public function signUp(Request                     $request,
                            EntityManagerInterface      $entityManager,
                            UserManagerInterface        $userManager,
@@ -48,19 +49,25 @@ class AccountController extends AbstractController
         }
         // on doit récupérer la route depuis laquelle cette méthode a été appelée,
         // pour y rediriger l'utilisateur après l'inscription,
-        // et en cas d'erreur, on doit faire afficher le formulaire automatiquement
+        // et en cas d'erreur, faire afficher le formulaire automatiquement
 //        $currentRoute = $request->attributes->get('_route');
-        return $this->render('user/sign-up.html.twig', [
+        return $this->redirectToRoute('homepage', [
             'form' => $form,
             //'showSignUpModal' => $showSignUpModal ?? false,
         ]);
     }
 
-    #[Route('/sign-in', name: 'sign_in')]
-    public function signIn(): Response
+    #[Route('/sign-in', name: 'sign_in', methods: ['GET', 'POST'])]
+    public function signIn(AuthenticationUtils $authenticationUtils): Response
     {
-        return $this->render('user/index.html.twig', [
-            'controller_name' => 'UserController',
+        if ($this->isGranted("ROLE_USER")) {
+            return $this->redirectToRoute("homepage");
+        }
+        // on doit récupérer la route depuis laquelle cette méthode a été appelée,
+        // pour y rediriger l'utilisateur après l'inscription,
+        // et en cas d'erreur, faire afficher le formulaire automatiquement
+        return $this->redirectToRoute("homepage", [
+            "email" => $authenticationUtils->getLastUsername(),
         ]);
     }
 }

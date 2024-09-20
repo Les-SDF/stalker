@@ -19,7 +19,7 @@ security:
             provider: app_user_provider
 
             form_login:
-                login_path: sign_in # peut-être mettre homepage ici
+                login_path: homepage # la route vers laquelle rediriger l'utilisateur en cas d'échec
                 check_path: sign_in
                 username_parameter: email
                 password_parameter: password

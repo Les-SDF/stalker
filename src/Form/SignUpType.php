@@ -36,19 +36,6 @@ class SignUpType extends AbstractType
                 'data' => $builder->getData()->getVisibility() === Visibility::Private
             ])
             ->add('submit', SubmitType::class);
-
-        // Permet de convertir la valeur du champ visibility en une valeur de l'enum Visibility
-        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
-            $form = $event->getForm();
-            $data = $event->getData();
-            $visibilityCheckboxValue = $form->get('visibility')->getData();
-
-            if ($visibilityCheckboxValue) {
-                $data->setVisibility(Visibility::Private);
-            } else {
-                $data->setVisibility(Visibility::Public);
-            }
-        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

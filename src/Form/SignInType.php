@@ -20,8 +20,11 @@ class SignInType extends AbstractType
                 'attr' => [
                     'autofocus' => true
                 ],
+                'mapped' => false
             ])
-            ->add('password', PasswordType::class)
+            ->add('password', PasswordType::class, [
+                'mapped' => false
+            ])
             ->add('remember', CheckboxType::class, [
                 'required' => false,
                 'mapped' => false
@@ -34,5 +37,10 @@ class SignInType extends AbstractType
         $resolver->setDefaults([
             'data_class' => User::class,
         ]);
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return '';  // Removes the form name prefix (e.g., "sign_in")
     }
 }
