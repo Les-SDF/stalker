@@ -78,7 +78,7 @@ class UserController extends AbstractController
             'signUpForm' => $signUpForm,
         ]);
     }
-    #[IsGranted(new Expression('is_granted("ROLE_ADMIN") or user.getId() == subject.getId()'))]
+    #[IsGranted(new Expression('is_granted("ROLE_ADMIN") or user.getId() == subject.getId()'), 'user')]
     #[Route('/user/{id}/delete', name: 'deleteUser', methods: ['GET'])]
     public function deleteUser(#[MapEntity] User $user, EntityManagerInterface $entityManager): Response
     {
