@@ -100,4 +100,24 @@ class UserController extends AbstractController
         return $this->redirectToRoute('displayPublicUser');
     }
 
+
+    #[Route('/user/{id}', name: 'userDetail', methods: ['GET', 'POST'])]
+    public function userDetail(UserRepository $repository, User $user): Response
+    {
+        $newUser = new User();
+        $signInForm = $this->createForm(SignInType::class, $newUser, [
+            'method' => 'POST',
+            'action' => $this->generateUrl('sign_in')
+        ]);
+        $signUpForm = $this->createForm(SignUpType::class, $newUser, [
+            'method' => 'POST',
+            'action' => $this->generateUrl('sign_up')
+        ]);
+
+        return $this->render('user/detailUser.html.twig', [
+            'signInForm' => $signInForm,
+            'signUpForm' => $signUpForm,
+            'user' => $user
+        ]);
+    }
 }
