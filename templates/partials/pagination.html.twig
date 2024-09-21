@@ -1,0 +1,20 @@
+{# templates/bundles/KnpPaginatorBundle/Pagination/sliding.html.twig #}
+{% if pageCount > 1 %}
+    <div class="flex justify-center text-xs font-medium space-x-1">
+        {% if previous is defined %}
+            <a class="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded" href="{{ path(route, query|merge({(pageParameterName): previous})) }}">&laquo;</a>
+        {% endif %}
+
+        {% for page in pagesInRange %}
+            {% if page != current %}
+                <a class="block w-8 h-8 text-center border border-gray-100 rounded leading-8" href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+            {% else %}
+                <span class="block w-8 h-8 text-center text-white bg-primary-600 border-primary-600 rounded leading-8" >{{ page }}</span>
+            {% endif %}
+        {% endfor %}
+
+        {% if next is defined %}
+            <a class="inline-flex items-center justify-center w-8 h-8 border border-gray-100 rounded" href="{{ path(route, query|merge({(pageParameterName): next})) }}">&raquo;</a>
+        {% endif %}
+    </div>
+{% endif %}
