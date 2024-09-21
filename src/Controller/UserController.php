@@ -78,19 +78,25 @@ class UserController extends AbstractController
             'signUpForm' => $signUpForm,
         ]);
     }
-    #[IsGranted('ROLE_ADMIN')]
+    #[IsGranted(new Expression('is_granted("ROLE_ADMIN") or user.getId() == subject.getId()'))]
     #[Route('/user/{id}/delete', name: 'deleteUser', methods: ['GET'])]
     public function deleteUser(#[MapEntity] User $user, EntityManagerInterface $entityManager): Response
     {
-        if (in_array('ROLE_ADMIN', $user->getRoles())) {
-            $this->addFlash('error', 'Vous ne pouvez pas supprimer un utilisateur avec le rôle ADMIN.');
-            return $this->redirectToRoute('displayPublicUser');
+        if ($this->getUser()->getId() !== $user->getId()) {
+            if (in_array('ROLE_ADMIN', $user->getRoles())) {
+                $this->addFlash('error', 'Vous ne pouvez pas supprimer un autre utilisateur ayant le rôle ADMIN.');
+                return $this->redirectToRoute('displayPublicUser');
+            }
         }
 
         $entityManager->remove($user);
         $entityManager->flush();
 
         $this->addFlash('success', 'Utilisateur supprimé avec succès.');
+
+//        if ($this->getUser()->getId() === $user->getId()) {
+//            return $this->redirectToRoute('app_logout');
+//        }
         return $this->redirectToRoute('displayPublicUser');
     }
 
