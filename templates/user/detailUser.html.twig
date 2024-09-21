@@ -3,6 +3,7 @@
 {% block title %}Détails de l'utilisateur{% endblock %}
 
 {% block body %}
+    {% include "user/modals/delete.twig" %}
     <style>
         #stalker-main {
             margin: 1em auto;
@@ -45,7 +46,8 @@
                     Modifier le profil
                 </button>
                 <button class="bg-gray-300 rounded-xl p-2 text-black transition-all duration-500 hover:bg-gray-400 hover:scale-110"
-                        onclick="window.location.href=''" type="button">
+                        data-modal-target="delete-modal"
+                        data-modal-toggle="delete-modal" type="button">
                     Supprimer le compte
                 </button>
             </div>
@@ -54,4 +56,6 @@
 
     </div>
 {% endblock %}
+
+
 
