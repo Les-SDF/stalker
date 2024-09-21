@@ -34,7 +34,7 @@ http://localhost:80/stalker/public/
 # Routes de l'application
 - [`GET` `/`](http://localhost:80/stalker/public/) : Page d'accueil
 - [`GET` `/user`](http://localhost:80/stalker/public/sign-in) : Page recensant les utilisateurs
-- [`GET` `/user/{id}`](http://localhost:80/stalker/public/sign-in) : Page d'acces aux comptes
-- [`GET` `/user/{id}/delete`](http://localhost:80/stalker/public/sign-in) : Action de suppression d'un utilisateur
+- [`GET` `/users/{id}`](http://localhost:80/stalker/public/sign-in) : Page d'acces aux comptes
+- [`GET` `/users/{id}/delete`](http://localhost:80/stalker/public/sign-in) : Action de suppression d'un utilisateur
 - [`POST` `/sign-up`](http://localhost:80/stalker/public/sign-up) : Action d'inscription
 - [`POST` `/sign-in`](http://localhost:80/stalker/public/sign-in) : Action de connexion

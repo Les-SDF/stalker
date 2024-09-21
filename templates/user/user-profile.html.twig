@@ -42,7 +42,7 @@
             <h2 class="text-lg font-semibold mt-6 mb-3 ml-2">Actions</h2>
             <div class="flex space-x-8">
                 <button class="bg-primary-700 rounded-xl p-2 text-white transition-all duration-500 hover:bg-primary-800 hover:scale-110"
-                        onclick="window.location.href='{{ path('updateUser', {'id': user.id}) }}'" type="button">
+                        onclick="window.location.href='{{ path('update_user', {'id': user.id}) }}'" type="button">
                     Modifier le profil
                 </button>
                 <button class="bg-gray-300 rounded-xl p-2 text-black transition-all duration-500 hover:bg-gray-400 hover:scale-110"
@@ -56,6 +56,3 @@
 
     </div>
 {% endblock %}
-
-
-

@@ -1,3 +1,6 @@
+{# TODO: Le boutton supprimer ne fonctionne pas bien, sûrement en rapport avec data-dismiss-target #}
+{# TODO: Avoir 4 boucles for ne fait pas très propre #}
+
 <div id="flash-messages-container" class="absolute right-4 bottom-4">
     {% for flashMessage in app.flashes("success") %}
         <div id="toast-success" class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert">
