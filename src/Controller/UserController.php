@@ -53,4 +53,24 @@ class UserController extends AbstractController
         }
         return $queryBuilder;
     }
+
+    #[Route('/user/update', name: 'updateUser', methods: ['GET', 'POST'])]
+    public function homepage(): Response
+    {
+
+        $user = new User();
+        $signInForm = $this->createForm(SignInType::class, $user, [
+            'method' => 'POST',
+            'action' => $this->generateUrl('sign_in')
+        ]);
+        $signUpForm = $this->createForm(SignUpType::class, $user, [
+            'method' => 'POST',
+            'action' => $this->generateUrl('sign_up')
+        ]);
+
+        return $this->render('user/modals/profile.html.twig', [
+            'signInForm' => $signInForm,
+            'signUpForm' => $signUpForm,
+        ]);
+    }
 }
