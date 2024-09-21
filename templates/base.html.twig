@@ -21,8 +21,6 @@
     {% block body %}
     {% endblock %}
 {% else %}
-    {% include "partials/side-navigation.html.twig" %}
-    {% include "user/modals/sign-in.html.twig" %}
     {% include('partials/maintenance.html.twig') %}
 {% endif %}
 </body>
