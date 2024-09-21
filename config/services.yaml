@@ -6,7 +6,7 @@
 
 parameters:
     profile_picture_directory: '%kernel.project_dir%/public/uploads/profile_picture'
-    geo_api_key: '%env(GEO_API_KEY)%'
+    geo_api_key: '%env(string:GEO_API_KEY)%'
 
 services:
     # default configuration for services in *this* file
@@ -23,8 +23,6 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
 twig:
     globals:
         maintenance: false

@@ -5,8 +5,7 @@ namespace App\Entity;
 use App\Enum\Gender;
 use App\Enum\Visibility;
 use App\Repository\UserRepository;
-use App\Service\RandomStringGeneratorInterface;
-use Random\RandomException;
+use DateTimeImmutable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
@@ -40,7 +39,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+     * @var string|null The hashed password
      */
     #[ORM\Column]
 //    #[Assert\Regex(
@@ -73,9 +72,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private ?string $customProfileCode = null;
 
-    /**
-     * @throws RandomException
-     */
+    #[ORM\Column]
+    private ?DateTimeImmutable $connectedAt = null;
+
+    #[ORM\Column]
+    private ?DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?DateTimeImmutable $editedAt = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $phoneNumber = null;
+
+    #[ORM\Column(length: 2)]
+    private ?string $countryCode = null;
+
     #[ORM\PrePersist]
     public function prePersist(): void
     {
@@ -85,9 +96,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->gender === null) {
             $this->gender = Gender::Unspecified;
         }
-        // Il serait mieux d'utiliser un meilleur moyen générer cette chaîne
-        // Avec la classe RandomStringGenerator par exemple
-        $this->defaultProfileCode = uniqid(more_entropy: true);
+        $this->connectedAt = new DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
+    }
+
+    #[ORM\PreUpdate]
+    public function preUpdate(): void
+    {
+        $this->editedAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -209,6 +225,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCustomProfileCode(string $customProfileCode): static
     {
         $this->customProfileCode = $customProfileCode;
+
+        return $this;
+    }
+
+    public function getConnectedAt(): ?DateTimeImmutable
+    {
+        return $this->connectedAt;
+    }
+
+    public function setConnectedAt(DateTimeImmutable $connectedAt): static
+    {
+        $this->connectedAt = $connectedAt;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getEditedAt(): ?DateTimeImmutable
+    {
+        return $this->editedAt;
+    }
+
+    public function setEditedAt(?DateTimeImmutable $editedAt): static
+    {
+        $this->editedAt = $editedAt;
+
+        return $this;
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(?string $phoneNumber): static
+    {
+        $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
+
+    public function getCountryCode(): ?string
+    {
+        return $this->countryCode;
+    }
+
+    public function setCountryCode(string $countryCode): static
+    {
+        $this->countryCode = $countryCode;
 
         return $this;
     }
