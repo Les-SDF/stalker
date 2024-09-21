@@ -101,7 +101,7 @@ class UserController extends AbstractController
     }
 
 
-    #[Route('/user/{id}', name: 'userDetail', methods: ['GET', 'POST'])]
+    #[Route('/user/{id}', name: 'userDetail', methods: ['GET'])]
     public function userDetail(UserRepository $repository, User $user): Response
     {
         $newUser = new User();
