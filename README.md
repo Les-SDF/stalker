@@ -20,7 +20,7 @@ php bin/console doctrine:schema:update --force
 npm run watch
 ```
 
-http://localgost:80/stalker/public/
+http://localhost:80/stalker/public/
 
 # Investissement de chacun
 
