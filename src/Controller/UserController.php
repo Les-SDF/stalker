@@ -6,13 +6,18 @@ use App\Entity\User;
 use App\Form\SignInType;
 use App\Form\SignUpType;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class UserController extends AbstractController
 {
@@ -73,4 +78,20 @@ class UserController extends AbstractController
             'signUpForm' => $signUpForm,
         ]);
     }
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/user/{id}/delete', name: 'deleteUser', methods: ['GET'])]
+    public function deleteUser(#[MapEntity] User $user, EntityManagerInterface $entityManager): Response
+    {
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+            $this->addFlash('error', 'Vous ne pouvez pas supprimer un utilisateur avec le rôle ADMIN.');
+            return $this->redirectToRoute('displayPublicUser');
+        }
+
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Utilisateur supprimé avec succès.');
+        return $this->redirectToRoute('displayPublicUser');
+    }
+
 }
