@@ -4,41 +4,52 @@
 
 {% block body %}
     <style>
-        #stalker-main { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        #stalker-main {
+            margin: 1em auto;
+            max-width: 800px;
+            width: 95%;
+            font: 18px/1.5 sans-serif;
+        }
     </style>
     <div id="stalker-main">
-        <h1 class="text-2xl font-bold mb-4">Détails de l'utilisateur</h1>
+        <h1 class="text-2xl font-bold mb-6">Détails de l'utilisateur</h1>
 
-        <!-- Bloc principal avec l'image et les informations de l'utilisateur -->
-        <div class="flex items-center mb-6">
+
+        <div class="flex items-center mb-6 shadow-md rounded-lg p-4 border-2 border-gray-50">
             <div class="w-16 h-16 bg-gray-300 rounded-full flex-shrink-0 mr-4">
-                <img src="{{ asset("img/default.png") }}" alt="{{ user.id }}" class="w-full h-full object-cover rounded-full" height="50px" width="50px">
+                <img src="{{ asset("img/default.png") }}" alt="{{ user.id }}"
+                     class="w-full h-full object-cover rounded-full" height="50px" width="50px">
             </div>
-            <div class="ml-4">
+            <div class="ml-4 flex flex-col space-y-2">
                 <h2 class="text-xl font-semibold">{{ user.prenom|default('Prenom') }} {{ user.nom|default('Nom') }}</h2>
-                <p class="text-gray-700"><strong>Email :</strong> {{ user.email }}</p>
-                <p class="text-gray-700"><strong>Date d'inscription :</strong> {{ user.dateInscription|default('Date Inconnue') }}</p>
+                <p class=""><strong>Email :</strong> {{ user.email }}</p>
+                <p class=""><strong>Date d'inscription :</strong> {{ user.dateInscription|default('Date Inconnue') }}
+                </p>
             </div>
         </div>
 
-        <!-- Deuxième bloc avec l'adresse et autres informations -->
-        <div class="bg-white shadow-md rounded-lg p-4">
+
+        <div class="bg-white shadow-md rounded-lg p-4 border-2 border-gray-50">
             <h3 class="text-lg font-semibold mb-2">Adresse Principale</h3>
-            <p class="text-gray-700"><strong>Rue :</strong> {{ user.adresse.rue |default('Rue')}}</p>
-            <p class="text-gray-700"><strong>Ville :</strong> {{ user.adresse.ville|default('Ville') }}</p>
-            <p class="text-gray-700"><strong>Code postal :</strong> {{ user.adresse.codePostal|default('Code Postale') }}</p>
+            <div class="flex-col flex space-y-2">
+                <p class=""><strong>Rue :</strong> {{ user.adresse.rue |default('Rue') }}</p>
+                <p class=""><strong>Ville :</strong> {{ user.adresse.ville|default('Ville') }}</p>
+                <p class=""><strong>Code postal :</strong> {{ user.adresse.codePostal|default('Code Postale') }}</p>
+            </div>
         </div>
-
-        <h2 class="text-lg font-semibold mt-6">Actions</h2>
-        <div class="mt-2">
-            <button onclick="window.location.href='{{ path('updateUser', {'id': user.id}) }}'" type="button">
-                Modifier le profil
-            </button>
-            <button onclick="window.location.href=''" type="button">
-                Supprimer le compte
-            </button>
-        </div>
-
+        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') and user.id == app.user.id %}
+            <h2 class="text-lg font-semibold mt-6 mb-3 ml-2">Actions</h2>
+            <div class="flex space-x-8">
+                <button class="bg-primary-700 rounded-xl p-2 text-white transition-all duration-500 hover:bg-primary-800 hover:scale-110"
+                        onclick="window.location.href='{{ path('updateUser', {'id': user.id}) }}'" type="button">
+                    Modifier le profil
+                </button>
+                <button class="bg-gray-300 rounded-xl p-2 text-black transition-all duration-500 hover:bg-gray-400 hover:scale-110"
+                        onclick="window.location.href=''" type="button">
+                    Supprimer le compte
+                </button>
+            </div>
+        {% endif %}
 
 
     </div>
