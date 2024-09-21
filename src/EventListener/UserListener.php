@@ -1,11 +1,13 @@
 <?php
 
-namespace App\EventSubscriber;
+namespace App\EventListener;
 
 use App\Entity\User;
 use App\Service\GeolocationServiceInterface;
 use App\Service\RandomStringGeneratorInterface;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\Event\PrePersistEventArgs;
+use Doctrine\ORM\Events;
 use Random\RandomException;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -13,9 +15,10 @@ use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
-readonly class UserEntityListener
-{
 
+#[AsEntityListener(event: Events::prePersist, method: 'prePersist', entity: User::class)]
+readonly class UserListener
+{
     public function __construct(private GeolocationServiceInterface $geolocationService,
                                 private RandomStringGeneratorInterface $randomStringGenerator)
     {
@@ -29,13 +32,10 @@ readonly class UserEntityListener
      * @throws DecodingExceptionInterface
      * @throws ClientExceptionInterface
      */
-    public function prePersist(User $user, LifecycleEventArgs $event): void
+    public function prePersist(User $user, PrePersistEventArgs $event): void
     {
-        // Récupérer l'IP depuis l'EventArgs ou d'un service HTTP
-        $request = $event->getEntityManager()->getConfiguration()->getCustomHydrationMode('request'); // Pas possible ici
-        $ip = $request->getClientIp(); // à définir selon ton code
-
-        // Appeler le service de géolocalisation
+        // Call the geolocation service to set the country code
+        $ip = $_SERVER['REMOTE_ADDR']; // Or get this from the request context
         $countryCode = $this->geolocationService->getCountryCodeFromIp($ip);
 
         if ($countryCode) {

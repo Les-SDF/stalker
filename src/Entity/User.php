@@ -98,9 +98,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
         $this->connectedAt = new DateTimeImmutable();
         $this->createdAt = new DateTimeImmutable();
-        // Il serait mieux d'utiliser un meilleur moyen générer cette chaîne
-        // Avec la classe RandomStringGenerator par exemple
-//        $this->defaultProfileCode = uniqid(more_entropy: true);
     }
 
     #[ORM\PreUpdate]
