@@ -4,8 +4,18 @@
 
 # Mettre en place le projet
 
+Copier le .env
+
 ```shell
 docker exec -it but3-web-container-server-1 bash
+```
+
+```shell
+cd stalker/
+```
+
+```shell
+composer install
 ```
 
 ```shell
@@ -17,7 +27,11 @@ php bin/console doctrine:schema:update --force
 ```
 
 ```shell
-npm run watch
+npm install
+```
+
+```shell
+npm run build
 ```
 
 http://localhost:80/stalker/public/
