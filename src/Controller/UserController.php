@@ -6,6 +6,9 @@ use App\Entity\User;
 use App\Form\SignInType;
 use App\Form\SignUpType;
 use App\Form\UpdateType;
+use App\Repository\UserRepository;
+use App\Service\ProfileCodeRedirectorInterface;
+use App\Service\RandomStringGeneratorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,9 +19,18 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class UserController extends AbstractController
 {
-    #[Route('/users/${id}/update', name: 'update_user', methods: ['GET', 'POST'])]
-    public function updateUser(#[MapEntity] User $user): Response
+    #[Route('/users/{code}/update', name: 'update_user', methods: ['GET', 'POST'])]
+    public function updateUser(string                         $code,
+                               UserRepository                 $repository,
+                               ProfileCodeRedirectorInterface $profileCodeRedirector): Response
     {
+        if (!$user = $repository->findByProfileCode($code)) {
+            $this->addFlash('error', 'User not found');
+            return $this->redirectToRoute('users_list');
+        }
+        if ($profileCodeRedirector->isRedirectableWithCustomProfileCode($user, $code)) {
+            return $profileCodeRedirector->redirectWithCustomProfileCode('update_user');
+        }
         $signInForm = $this->createForm(SignInType::class, $user, [
             'method' => 'POST',
             'action' => $this->generateUrl('sign_in')
@@ -32,7 +44,7 @@ class UserController extends AbstractController
             'action' => $this->generateUrl('update_user', ['id' => $user->getId()])
         ]);
 
-        return $this->render('user/updateProfile.html.twig', [
+        return $this->render('user/profile-update.html.twig', [
             'signInForm' => $signInForm,
             'signUpForm' => $signUpForm,
             'form' => $update

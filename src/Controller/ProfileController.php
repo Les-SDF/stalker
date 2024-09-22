@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\SignInType;
 use App\Form\SignUpType;
 use App\Repository\UserRepository;
+use App\Service\ProfileCodeRedirectorInterface;
 use App\Service\QueryBuilderServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -48,17 +49,16 @@ class ProfileController extends AbstractController
     }
 
     #[Route('/users/{code}', name: 'user_profile', methods: ['GET'])]
-    public function userProfile(UserRepository $repository,
-                                string $code): Response
+    public function userProfile(string                         $code,
+                                UserRepository                 $repository,
+                                ProfileCodeRedirectorInterface $profileCodeRedirector): Response
     {
         if (!$user = $repository->findByProfileCode($code)) {
             $this->addFlash('error', 'User not found');
             return $this->redirectToRoute('users_list');
         }
-        if ($user->getDefaultProfileCode() === $code and $user->getCustomProfileCode()) {
-            return $this->redirectToRoute('user_profile', [
-                'code' => $user->getCustomProfileCode()
-            ]);
+        if ($profileCodeRedirector->isRedirectableWithCustomProfileCode($user, $code)) {
+            return $profileCodeRedirector->redirectWithCustomProfileCode('user_profile');
         }
         $newUser = new User();
         $signInForm = $this->createForm(SignInType::class, $newUser, [

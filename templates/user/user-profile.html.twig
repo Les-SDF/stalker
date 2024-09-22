@@ -25,7 +25,6 @@
                 <p class=""><strong>Email :</strong> {{ user.email }}</p>
                 <p class=""><strong>Date d'inscription :</strong> {{ user.dateInscription|default('Date Inconnue') }}
                 <p class=""><strong>Genre :</strong> {{ 'Non spécifié' }}</p>
-                </p>
                 <img src="https://flagsapi.com/{{ user.countryCode|default('US') }}/shiny/64.png" alt="{{ user.countryCode }}"
                      class="absolute top-4 right-4 w-8 h-8" />
             </div>
@@ -60,7 +59,7 @@
         {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') and user.id == app.user.id %}
             <div class="flex space-x-8">
                 <button class="bg-primary-700 rounded-xl p-2 text-white transition-all duration-500 hover:bg-primary-800 hover:scale-110"
-                        onclick="window.location.href='{{ path('update_user', {'id': user.id}) }}'" type="button">
+                        onclick="window.location.href='{{ path('update_user', {'id': user.customProfileCode ?? user.defaultProfileCode}) }}'" type="button">
                     Modifier le profil
                 </button>
                 <button class="bg-gray-300 rounded-xl p-2 text-black transition-all duration-500 hover:bg-gray-400 hover:scale-110"
