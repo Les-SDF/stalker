@@ -34,8 +34,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    // TODO: Vérifier que mon Expression fonctionne bien
-    #[IsGranted(new Expression('not user.hasRole("ROLE_ADMIN") and (is_granted("ROLE_ADMIN") or user.getId() == subject.getId())'), 'user')]
+    #[IsGranted(new Expression('(not subject.hasRole("ROLE_ADMIN")) and (is_granted("ROLE_ADMIN") or subject.getId() == subject.getId())'), 'user')]
     #[Route('/users/{id}/delete', name: 'delete_user', methods: ['GET'])]
     public function deleteUser(#[MapEntity] User      $user,
                                EntityManagerInterface $entityManager): Response

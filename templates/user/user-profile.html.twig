@@ -3,7 +3,7 @@
 {% block title %}Détails de l'utilisateur{% endblock %}
 
 {% block body %}
-    {% include "user/modals/delete.twig" %}
+    {% include "user/modals/delete.twig" with {'user': user}%}
     <style>
         #stalker-main {
             margin: 1em auto;
