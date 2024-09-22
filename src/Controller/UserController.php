@@ -29,6 +29,7 @@ class UserController extends AbstractController
             $this->addFlash('error', 'User not found');
             return $this->redirectToRoute('users_list');
         }
+        $this->denyAccessUnlessGranted("USER_EDIT", $user);
         if ($profileCodeRedirector->isRedirectableWithCustomProfileCode($user, $code)) {
             return $profileCodeRedirector->redirectWithCustomProfileCode('update_user');
         }
@@ -52,35 +53,37 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[IsGranted(new Expression('(not subject.hasRole("ROLE_ADMIN")) and (is_granted("ROLE_ADMIN") or subject.getId() == subject.getId())'), 'user')]
-    #[Route('/users/{id}/delete', name: 'delete_user', methods: ['GET'])]
-    public function deleteUser(#[MapEntity] User      $user,
+    #[Route('/users/{code}/delete', name: 'delete_user', options: ['expose' => true], methods: ['DELETE'])]
+    public function deleteUser(string                 $code,
+                               UserRepository         $repository,
                                EntityManagerInterface $entityManager): Response
     {
+        if (!$user = $repository->findByProfileCode($code)) {
+            $this->addFlash('error', 'User not found');
+            return $this->redirectToRoute('users_list');
+        }
+        $this->denyAccessUnlessGranted("USER_DELETE", $user);
         $entityManager->remove($user);
         $entityManager->flush();
 
         $this->addFlash('success', 'User deleted successfully');
-
-//        if ($this->getUser()->getId() === $user->getId()) {
-//            return $this->redirectToRoute('app_logout');
-//        }
         return $this->redirectToRoute('users_list');
     }
 
     /**
      * @throws RandomException
      */
-    #[Route('/users/{code}/update', name: 'regenerate_default_profile_code', options: ['expose' => true], methods: ['POST'])]
-    public function regenerateDefaultProfileCode(string                         $code,
-                                                 UserRepository                 $repository,
-                                                 ProfileCodeRedirectorInterface $profileCodeRedirector,
-                                                 UserManagerInterface           $userManager): Response
+    #[Route('/users/{code}/reset-profile-code', name: 'reset_default_profile_code', options: ['expose' => true], methods: ['POST'])]
+    public function resetDefaultProfileCode(string                         $code,
+                                            UserRepository                 $repository,
+                                            ProfileCodeRedirectorInterface $profileCodeRedirector,
+                                            UserManagerInterface           $userManager): Response
     {
         if (!$user = $repository->findByProfileCode($code)) {
             $this->addFlash('error', 'User not found');
             return $this->redirectToRoute('users_list');
         }
+        $this->denyAccessUnlessGranted("USER_RESET_DEFAULT_PROFILE_CODE", $user);
         if ($profileCodeRedirector->isRedirectableWithCustomProfileCode($user, $code)) {
             return $profileCodeRedirector->redirectWithCustomProfileCode('regenerate_default_profile_code');
         }
