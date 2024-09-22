@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class ProfileController extends AbstractController
 {
@@ -76,13 +77,18 @@ class ProfileController extends AbstractController
         ]);
     }
 
-    // TODO: Faire fonctionner cette route (ça marche pas)
-    #[Route('/users/{code}/json', name: 'user_profile_json', methods: ['GET'])]
-    public function userProfileJSON(UserRepository $repository,
+    #[Route('/users/{code}/json', name: 'user_profile_json', options: ["expose" => true], methods: ['GET'])]
+    public function userProfileJSON(UserRepository $repository, SerializerInterface $serializer,
                                     string         $code): JsonResponse
     {
-        return new JsonResponse(
-            json_encode($repository->findByProfileCode($code))
-        );
+        $user = $repository->findByProfileCode($code);
+
+        if (!$user) {
+            return new JsonResponse(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $json = $serializer->serialize($user, 'json');
+
+        return new JsonResponse($json, Response::HTTP_OK, [], true);
     }
 }
