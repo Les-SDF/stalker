@@ -15,10 +15,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class UserController extends AbstractController
 {
-    #[Route('/users/update', name: 'update_user', methods: ['GET', 'POST'])]
-    public function updateUser(): Response
+    #[Route('/users/${id}/update', name: 'update_user', methods: ['GET', 'POST'])]
+    public function updateUser(#[MapEntity] User $user): Response
     {
-        $user = new User();
         $signInForm = $this->createForm(SignInType::class, $user, [
             'method' => 'POST',
             'action' => $this->generateUrl('sign_in')
