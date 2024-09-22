@@ -13,10 +13,9 @@
         }
     </style>
     <div id="stalker-main">
-        <h1 class="text-2xl font-bold mb-6">Détails de l'utilisateur</h1>
 
 
-        <div class="flex items-center mb-6 shadow-md rounded-lg p-4 border-2 border-gray-50">
+        <div class="relative flex items-center shadow-md rounded-lg p-4 border-2 border-gray-50 mb-6 mt-52">
             <div class="w-16 h-16 bg-gray-300 rounded-full flex-shrink-0 mr-4">
                 <img src="{{ asset("img/default.png") }}" alt="{{ user.id }}"
                      class="w-full h-full object-cover rounded-full" height="50px" width="50px">
@@ -25,12 +24,15 @@
                 <h2 class="text-xl font-semibold">{{ user.prenom|default('Prenom') }} {{ user.nom|default('Nom') }}</h2>
                 <p class=""><strong>Email :</strong> {{ user.email }}</p>
                 <p class=""><strong>Date d'inscription :</strong> {{ user.dateInscription|default('Date Inconnue') }}
+                <p class=""><strong>Genre :</strong> {{ 'Non spécifié' }}</p>
                 </p>
+                <img src="https://flagsapi.com/{{ user.countryCode|default('US') }}/shiny/64.png" alt="{{ user.countryCode }}"
+                     class="absolute top-4 right-4 w-8 h-8" />
             </div>
         </div>
 
 
-        <div class="bg-white shadow-md rounded-lg p-4 border-2 border-gray-50">
+        <div class="bg-white shadow-md rounded-lg p-4 border-2 border-gray-50 mb-6">
             <h3 class="text-lg font-semibold mb-2">Adresse Principale</h3>
             <div class="flex-col flex space-y-2">
                 <p class=""><strong>Rue :</strong> {{ user.adresse.rue |default('Rue') }}</p>
@@ -38,8 +40,24 @@
                 <p class=""><strong>Code postal :</strong> {{ user.adresse.codePostal|default('Code Postale') }}</p>
             </div>
         </div>
+
+        <div class="bg-white shadow-md rounded-lg p-4 border-2 border-gray-50 mb-6">
+            <h3 class="text-lg font-semibold mb-2">Réseaux Sociaux</h3>
+            <div class="flex-col flex space-y-2">
+                <p class=""><strong>Google :</strong> {{ user.adresse.rue |default('test') }}</p>
+                <p class=""><strong>Facebook :</strong> {{ user.adresse.ville|default('test') }}</p>
+                <p class=""><strong>Steam :</strong> {{ user.adresse.codePostal|default('test') }}</p>
+            </div>
+        </div>
+
+        <div class="bg-white shadow-md rounded-lg p-4 border-2 border-gray-50 mb-6">
+            <h3 class="text-lg font-semibold mb-2">Contact</h3>
+            <div class="flex-col flex space-y-2">
+                <p class=""><strong>Telephone :</strong> {{ user.phoneNumber |default('Numero tel') }}</p>
+            </div>
+        </div>
+
         {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') and user.id == app.user.id %}
-            <h2 class="text-lg font-semibold mt-6 mb-3 ml-2">Actions</h2>
             <div class="flex space-x-8">
                 <button class="bg-primary-700 rounded-xl p-2 text-white transition-all duration-500 hover:bg-primary-800 hover:scale-110"
                         onclick="window.location.href='{{ path('update_user', {'id': user.id}) }}'" type="button">
