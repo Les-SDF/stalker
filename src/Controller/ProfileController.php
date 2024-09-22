@@ -78,17 +78,19 @@ class ProfileController extends AbstractController
     }
 
     #[Route('/users/{code}/json', name: 'user_profile_json', options: ["expose" => true], methods: ['GET'])]
-    public function userProfileJSON(UserRepository $repository, SerializerInterface $serializer,
-                                    string         $code): JsonResponse
+    public function userProfileJSON(string              $code,
+                                    UserRepository      $repository,
+                                    SerializerInterface $serializer): JsonResponse
     {
-        $user = $repository->findByProfileCode($code);
-
-        if (!$user) {
+        if (!$user = $repository->findByProfileCode($code)) {
             return new JsonResponse(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $json = $serializer->serialize($user, 'json');
-
-        return new JsonResponse($json, Response::HTTP_OK, [], true);
+        return new JsonResponse(
+            $serializer->serialize($user, 'json'),
+            Response::HTTP_OK,
+            [],
+            true
+        );
     }
 }
