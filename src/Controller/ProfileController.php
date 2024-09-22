@@ -7,10 +7,9 @@ use App\Form\SignInType;
 use App\Form\SignUpType;
 use App\Repository\UserRepository;
 use App\Service\QueryBuilderServiceInterface;
-use App\Service\UserQueryBuilderService;
-use Doctrine\ORM\QueryBuilder;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -18,10 +17,9 @@ use Symfony\Component\Routing\Attribute\Route;
 class ProfileController extends AbstractController
 {
     #[Route('/users', name: 'users_list')]
-    public function usersList(UserRepository     $repository,
-                              PaginatorInterface $paginator,
-                              UserQueryBuilderService $queryBuilderService,
-                              Request            $request): Response
+    public function usersList(PaginatorInterface           $paginator,
+                              QueryBuilderServiceInterface $queryBuilderService,
+                              Request                      $request): Response
     {
         $queryBuilder = $queryBuilderService->createQueryBuilder('u');
 
@@ -48,10 +46,19 @@ class ProfileController extends AbstractController
         ]);
     }
 
-    #[Route('/users/{id}', name: 'user_profile', methods: ['GET'])]
+    #[Route('/users/{code}', name: 'user_profile', methods: ['GET'])]
     public function userProfile(UserRepository $repository,
-                                User           $user): Response
+                                string $code): Response
     {
+        if (!$user = $repository->findByProfileCode($code)) {
+            $this->addFlash('error', 'User not found');
+            return $this->redirectToRoute('users_list');
+        }
+        if ($user->getDefaultProfileCode() === $code) {
+            return $this->redirectToRoute('user_profile', [
+                'code' => $user->getCustomProfileCode()
+            ]);
+        }
         $newUser = new User();
         $signInForm = $this->createForm(SignInType::class, $newUser, [
             'method' => 'POST',
@@ -67,5 +74,15 @@ class ProfileController extends AbstractController
             'signUpForm' => $signUpForm,
             'user' => $user
         ]);
+    }
+
+    // TODO: Faire fonctionner cette route (ça marche pas)
+    #[Route('/users/{code}/json', name: 'user_profile_json', methods: ['GET'])]
+    public function userProfileJSON(UserRepository $repository,
+                                    string         $code): JsonResponse
+    {
+        return new JsonResponse(
+            json_encode($repository->findByProfileCode($code))
+        );
     }
 }
