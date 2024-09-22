@@ -42,13 +42,7 @@ readonly class UserListener
         /**
          * @var UserRepository $repository
          */
-        $repository = $event->getObjectManager()->getRepository(User::class);
-        do {
-            // Moyen plus sécurisé de générer un code aléatoire
-            $defaultProfileCode = $this->randomStringGenerator->generate();
-        }
-        while ($repository->findByProfileCode($defaultProfileCode));
-        $user->setDefaultProfileCode($defaultProfileCode);
+        $this->userManager->generateDefaultProfileCode($user);
 
         if ($this->geolocationEnabled) {
             $user->setCountryCode(

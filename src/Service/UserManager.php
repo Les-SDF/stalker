@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
+use Random\RandomException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -11,17 +13,19 @@ readonly class UserManager implements UserManagerInterface
 {
     public function __construct(
         #[Autowire("%profile_picture_directory%")]
-        private string                      $profilePictureDirectory,
+        private string                         $profilePictureDirectory,
+        private UserRepository                 $repository,
+        private UserPasswordHasherInterface    $passwordHasher,
+        private RandomStringGeneratorInterface $randomStringGenerator
     )
     {
     }
 
-    public function hashPassword(User                        $user,
-                                 ?string                     $password,
-                                 UserPasswordHasherInterface $passwordHasher): void
+    public function hashPassword(User    $user,
+                                 ?string $password): void
     {
         $user->setPassword(
-            $passwordHasher->hashPassword($user, $password)
+            $this->passwordHasher->hashPassword($user, $password)
         );
     }
 

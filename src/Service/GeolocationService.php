@@ -12,8 +12,9 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 readonly class GeolocationService implements GeolocationServiceInterface
 {
-    public function __construct(private HttpClientInterface               $client,
-                                #[Autowire('%geo_api_key%')] private string $geoApiKey)
+    public function __construct(private HttpClientInterface $client,
+                                #[Autowire('%geo_api_key%')]
+                                private string              $geoApiKey)
     {
     }
 

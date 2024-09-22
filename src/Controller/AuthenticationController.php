@@ -11,7 +11,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -20,7 +19,6 @@ class AuthenticationController extends AbstractController
     #[Route('/sign-up', name: 'sign_up', methods: ['POST'])]
     public function signUp(Request                     $request,
                            UserManagerInterface        $userManager,
-                           UserPasswordHasherInterface $passwordHasher,
                            EntityManagerInterface      $entityManager,
                            FlashMessageHelperInterface $flashMessageHelper): Response
     {
@@ -34,8 +32,7 @@ class AuthenticationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $userManager->hashPassword(
                 user: $user,
-                password: $form->get('password')->getData(),
-                passwordHasher: $passwordHasher
+                password: $form->get('password')->getData()
             );
             $user->setVisibility(
                 visibility: $form->get('visibility')->getData()
