@@ -54,7 +54,7 @@ class ProfileController extends AbstractController
             $this->addFlash('error', 'User not found');
             return $this->redirectToRoute('users_list');
         }
-        if ($user->getDefaultProfileCode() === $code) {
+        if ($user->getDefaultProfileCode() === $code and $user->getCustomProfileCode()) {
             return $this->redirectToRoute('user_profile', [
                 'code' => $user->getCustomProfileCode()
             ]);
