@@ -41,7 +41,7 @@ class UserController extends AbstractController
         ]);
         $update = $this->createForm(UpdateType::class, $user, [
             'method' => 'POST',
-            'action' => $this->generateUrl('update_user', ['id' => $user->getId()])
+            'action' => $this->generateUrl('update_user', ['code' => $user->getCustomProfileCode() ?? $user->getDefaultProfileCode()])
         ]);
 
         return $this->render('user/profile-update.html.twig', [
