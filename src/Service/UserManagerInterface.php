@@ -9,23 +9,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 interface UserManagerInterface
 {
-    /**
-     * Hashes the password of the given user.
-     *
-     * @param User $user
-     * @param string|null $password
-     * @param UserPasswordHasherInterface $passwordHasher
-     * @return void
-     */
-    public function hashPassword(User $user, ?string $password): void;
+    public function hashPassword(User $user, ?string $password, UserPasswordHasherInterface $passwordHasher): void;
 
-    /**
-     * Stores the profile picture of the given user.
-     *
-     * @param User $user
-     * @param UploadedFile|null $file
-     * @param string $profilePictureDirectory
-     * @return void
-     */
     public function storeProfilePicture(User $user, ?UploadedFile $file): void;
 }

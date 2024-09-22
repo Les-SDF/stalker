@@ -12,16 +12,16 @@ readonly class UserManager implements UserManagerInterface
     public function __construct(
         #[Autowire("%profile_picture_directory%")]
         private string                      $profilePictureDirectory,
-        private UserPasswordHasherInterface $passwordHasher
     )
     {
     }
 
-    public function hashPassword(User    $user,
-                                 ?string $password): void
+    public function hashPassword(User                        $user,
+                                 ?string                     $password,
+                                 UserPasswordHasherInterface $passwordHasher): void
     {
         $user->setPassword(
-            $this->passwordHasher->hashPassword($user, $password)
+            $passwordHasher->hashPassword($user, $password)
         );
     }
 
