@@ -4,6 +4,9 @@ controllers:
         namespace: App\Controller
     type: attribute
 
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing-sf4.xml"
+
 #fos_js_routing:
 #    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing-sf4.xml"
 
