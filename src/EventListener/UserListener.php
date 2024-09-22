@@ -5,7 +5,7 @@ namespace App\EventListener;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\GeolocationServiceInterface;
-use App\Service\RandomStringGeneratorInterface;
+use App\Service\UserManagerInterface;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Events;
@@ -22,9 +22,9 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 readonly class UserListener
 {
     public function __construct(#[Autowire('%geolocation_enabled%')]
-                                private bool                           $geolocationEnabled,
-                                private GeolocationServiceInterface    $geolocationService,
-                                private RandomStringGeneratorInterface $randomStringGenerator
+                                private bool                        $geolocationEnabled,
+                                private GeolocationServiceInterface $geolocationService,
+                                private UserManagerInterface        $userManager
     )
     {
     }

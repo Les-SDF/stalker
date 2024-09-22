@@ -8,8 +8,9 @@ use App\Form\SignUpType;
 use App\Form\UpdateType;
 use App\Repository\UserRepository;
 use App\Service\ProfileCodeRedirectorInterface;
-use App\Service\RandomStringGeneratorInterface;
+use App\Service\UserManagerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Random\RandomException;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -65,5 +66,26 @@ class UserController extends AbstractController
 //            return $this->redirectToRoute('app_logout');
 //        }
         return $this->redirectToRoute('users_list');
+    }
+
+    /**
+     * @throws RandomException
+     */
+    #[Route('/users/{code}/update', name: 'regenerate_default_profile_code', options: ['expose' => true], methods: ['POST'])]
+    public function regenerateDefaultProfileCode(string                         $code,
+                                                 UserRepository                 $repository,
+                                                 ProfileCodeRedirectorInterface $profileCodeRedirector,
+                                                 UserManagerInterface           $userManager): Response
+    {
+        if (!$user = $repository->findByProfileCode($code)) {
+            $this->addFlash('error', 'User not found');
+            return $this->redirectToRoute('users_list');
+        }
+        if ($profileCodeRedirector->isRedirectableWithCustomProfileCode($user, $code)) {
+            return $profileCodeRedirector->redirectWithCustomProfileCode('regenerate_default_profile_code');
+        }
+        $userManager->generateDefaultProfileCode($user);
+
+        return $this->redirectToRoute('update_user', ['code' => $user->getCustomProfileCode() ?? $user->getDefaultProfileCode()]);
     }
 }

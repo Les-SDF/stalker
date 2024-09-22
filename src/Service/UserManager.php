@@ -38,4 +38,16 @@ readonly class UserManager implements UserManagerInterface
             //$user->setProfilePicture($fileName);
         }
     }
+
+    /**
+     * @throws RandomException
+     */
+    public function generateDefaultProfileCode(User $user): void
+    {
+        do {
+            // Moyen plus sécurisé de générer un code aléatoire
+            $defaultProfileCode = $this->randomStringGenerator->generate();
+        } while ($this->repository->findByProfileCode($defaultProfileCode));
+        $user->setDefaultProfileCode($defaultProfileCode);
+    }
 }
