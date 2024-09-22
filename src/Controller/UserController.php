@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\SignInType;
 use App\Form\SignUpType;
+use App\Form\UpdateType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,10 +27,15 @@ class UserController extends AbstractController
             'method' => 'POST',
             'action' => $this->generateUrl('sign_up')
         ]);
+        $update = $this->createForm(UpdateType::class, $user, [
+            'method' => 'POST',
+            'action' => $this->generateUrl('update_user', ['id' => $user->getId()])
+        ]);
 
-        return $this->render('user/profile.html.twig', [
+        return $this->render('user/updateProfile.html.twig', [
             'signInForm' => $signInForm,
             'signUpForm' => $signUpForm,
+            'form' => $update
         ]);
     }
 
