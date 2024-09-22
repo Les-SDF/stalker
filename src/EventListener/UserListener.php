@@ -3,6 +3,7 @@
 namespace App\EventListener;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Service\GeolocationServiceInterface;
 use App\Service\RandomStringGeneratorInterface;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
@@ -23,7 +24,7 @@ readonly class UserListener
     public function __construct(#[Autowire('%geolocation_enabled%')]
                                 private bool                           $geolocationEnabled,
                                 private GeolocationServiceInterface    $geolocationService,
-                                private RandomStringGeneratorInterface $randomStringGenerator,
+                                private RandomStringGeneratorInterface $randomStringGenerator
     )
     {
     }
@@ -38,15 +39,23 @@ readonly class UserListener
      */
     public function prePersist(User $user, PrePersistEventArgs $event): void
     {
-        if ($this->geolocationEnabled) {
-            $ip = $_SERVER['REMOTE_ADDR'];
-            $countryCode = $this->geolocationService->getCountryCodeFromIp($ip);
+        /**
+         * @var UserRepository $repository
+         */
+        $repository = $event->getObjectManager()->getRepository(User::class);
+        do {
+            // Moyen plus sécurisé de générer un code aléatoire
+            $defaultProfileCode = $this->randomStringGenerator->generate();
         }
-        $user->setCountryCode($countryCode ?? 'FR');
+        while ($repository->findByProfileCode($defaultProfileCode));
+        $user->setDefaultProfileCode($defaultProfileCode);
 
-        // Moyen plus sécurisé de générer un code aléatoire
-        $user->setDefaultProfileCode(
-            $this->randomStringGenerator->generate()
-        );
+        if ($this->geolocationEnabled) {
+            $user->setCountryCode(
+                countryCode: $this->geolocationService->getCountryCodeFromIp(
+                    ip: $_SERVER['REMOTE_ADDR']
+                )
+            );
+        }
     }
 }

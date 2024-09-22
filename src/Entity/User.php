@@ -84,7 +84,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $phoneNumber = null;
 
-    #[ORM\Column(length: 2)]
+    #[ORM\Column(length: 2, nullable: true)]
     private ?string $countryCode = null;
 
     #[ORM\PrePersist]
@@ -287,10 +287,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->countryCode = $countryCode;
 
         return $this;
-    }
-
-    public function hasRole(string $role): bool
-    {
-        return in_array($role, $this->roles);
     }
 }
