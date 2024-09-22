@@ -9,5 +9,5 @@ interface ProfileCodeRedirectorInterface
 {
     public function isRedirectableWithCustomProfileCode(UserInterface $user, string $code): bool;
 
-    public function redirectWithCustomProfileCode(string $routeName): RedirectResponse;
+    public function redirectToRouteWithCustomProfileCode(string $routeName): RedirectResponse;
 }

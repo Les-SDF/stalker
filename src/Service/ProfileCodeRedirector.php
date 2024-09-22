@@ -29,7 +29,7 @@ readonly class ProfileCodeRedirector implements ProfileCodeRedirectorInterface
         return $this->user->getDefaultProfileCode() === $code && $this->user->getCustomProfileCode();
     }
 
-    public function redirectWithCustomProfileCode(string $routeName): RedirectResponse
+    public function redirectToRouteWithCustomProfileCode(string $routeName): RedirectResponse
     {
         if (!$this->user->getCustomProfileCode()) {
             throw new LogicException("User has no custom profile code");

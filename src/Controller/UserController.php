@@ -31,7 +31,7 @@ class UserController extends AbstractController
         }
         $this->denyAccessUnlessGranted("USER_EDIT", $user);
         if ($profileCodeRedirector->isRedirectableWithCustomProfileCode($user, $code)) {
-            return $profileCodeRedirector->redirectWithCustomProfileCode('update_user');
+            return $profileCodeRedirector->redirectToRouteWithCustomProfileCode('update_user');
         }
         $signInForm = $this->createForm(SignInType::class, $user, [
             'method' => 'POST',
@@ -85,7 +85,7 @@ class UserController extends AbstractController
         }
         $this->denyAccessUnlessGranted("USER_RESET_DEFAULT_PROFILE_CODE", $user);
         if ($profileCodeRedirector->isRedirectableWithCustomProfileCode($user, $code)) {
-            return $profileCodeRedirector->redirectWithCustomProfileCode('regenerate_default_profile_code');
+            return $profileCodeRedirector->redirectToRouteWithCustomProfileCode('reset_default_profile_code');
         }
         $userManager->generateDefaultProfileCode($user);
 

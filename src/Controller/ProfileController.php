@@ -58,7 +58,7 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('users_list');
         }
         if ($profileCodeRedirector->isRedirectableWithCustomProfileCode($user, $code)) {
-            return $profileCodeRedirector->redirectWithCustomProfileCode('user_profile');
+            return $profileCodeRedirector->redirectToRouteWithCustomProfileCode('user_profile');
         }
         $newUser = new User();
         $signInForm = $this->createForm(SignInType::class, $newUser, [
