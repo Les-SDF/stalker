@@ -6,6 +6,8 @@ use App\Entity\User;
 use App\Form\SignInType;
 use App\Form\SignUpType;
 use App\Repository\UserRepository;
+use App\Service\QueryBuilderServiceInterface;
+use App\Service\UserQueryBuilderService;
 use Doctrine\ORM\QueryBuilder;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,9 +20,10 @@ class ProfileController extends AbstractController
     #[Route('/users', name: 'users_list')]
     public function usersList(UserRepository     $repository,
                               PaginatorInterface $paginator,
+                              UserQueryBuilderService $queryBuilderService,
                               Request            $request): Response
     {
-        $queryBuilder = $this->createQueryBuilder('u', null, $repository);
+        $queryBuilder = $queryBuilderService->createQueryBuilder('u');
 
         $pagination = $paginator->paginate(
             $queryBuilder,
@@ -43,19 +46,6 @@ class ProfileController extends AbstractController
             'signInForm' => $signInForm,
             'signUpForm' => $signUpForm,
         ]);
-    }
-
-    // TODO: Ca ne devrait pas être un service ?
-    public function createQueryBuilder(string         $alias,
-                                       ?string        $indexBy = null,
-                                       UserRepository $repository): QueryBuilder
-    {
-        $queryBuilder = $repository->createQueryBuilder($alias);
-        if (!$this->isGranted("ROLE_ADMIN")) {
-            $queryBuilder->andWhere('u.visibility = :visibility')
-                ->setParameter('visibility', 'public');
-        }
-        return $queryBuilder;
     }
 
     #[Route('/users/{id}', name: 'user_profile', methods: ['GET'])]
