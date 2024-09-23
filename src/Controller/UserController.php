@@ -20,6 +20,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class UserController extends AbstractController
 {
+    #[Route('/users', name: 'users_list', methods: ['GET'])]
+    public function usersList(): Response
+    {
+        return $this->redirectToRoute('homepage');
+    }
+
     #[Route('/users/{code}/update', name: 'update_user', methods: ['GET', 'POST'])]
     public function updateUser(string                         $code,
                                UserRepository                 $repository,
@@ -27,7 +33,7 @@ class UserController extends AbstractController
     {
         if (!$user = $repository->findByProfileCode($code)) {
             $this->addFlash('error', 'User not found');
-            return $this->redirectToRoute('users_list');
+            return $this->redirectToRoute('homepage');
         }
         $this->denyAccessUnlessGranted("USER_EDIT", $user);
         if ($profileCodeRedirector->isRedirectableWithCustomProfileCode($user, $code)) {
@@ -60,14 +66,14 @@ class UserController extends AbstractController
     {
         if (!$user = $repository->findByProfileCode($code)) {
             $this->addFlash('error', 'User not found');
-            return $this->redirectToRoute('users_list');
+            return $this->redirectToRoute('homepage');
         }
         $this->denyAccessUnlessGranted("USER_DELETE", $user);
         $entityManager->remove($user);
         $entityManager->flush();
 
         $this->addFlash('success', 'User deleted successfully');
-        return $this->redirectToRoute('users_list');
+        return $this->redirectToRoute('homepage');
     }
 
     /**
@@ -81,7 +87,7 @@ class UserController extends AbstractController
     {
         if (!$user = $repository->findByProfileCode($code)) {
             $this->addFlash('error', 'User not found');
-            return $this->redirectToRoute('users_list');
+            return $this->redirectToRoute('homepage');
         }
         $this->denyAccessUnlessGranted("USER_RESET_DEFAULT_PROFILE_CODE", $user);
         if ($profileCodeRedirector->isRedirectableWithCustomProfileCode($user, $code)) {
