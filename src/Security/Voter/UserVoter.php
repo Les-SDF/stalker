@@ -34,8 +34,8 @@ final class UserVoter extends AbstractVoter
             case self::VIEW:
                 return true;
             case self::EDIT:
-                if ($this->security->isGranted("ROLE_ADMIN") ||
-                    $subject === $user) {
+            case self::RESET_DEFAULT_PROFILE_CODE:
+                if ($subject === $user) {
                     return true;
                 }
                 break;
@@ -43,11 +43,6 @@ final class UserVoter extends AbstractVoter
                 if ($this->security->isGranted("ROLE_ADMIN") &&
                     !in_array("ROLE_ADMIN", $user->getRoles()) ||
                     $subject === $user) {
-                    return true;
-                }
-                break;
-            case self::RESET_DEFAULT_PROFILE_CODE:
-                if ($subject === $user) {
                     return true;
                 }
                 break;
