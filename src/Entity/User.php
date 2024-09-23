@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Enum\Gender;
+use App\Enum\Sexuality;
 use App\Enum\Visibility;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
@@ -55,6 +56,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: "string", enumType: Gender::class)]
     private ?Gender $gender = null;
+
+    #[ORM\Column(nullable: true, enumType: Sexuality::class)]
+    private ?Sexuality $sexuality = null;
 
     #[ORM\Column(enumType: Visibility::class)]
     private ?Visibility $visibility = null;
@@ -265,6 +269,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCountryCode(string $countryCode): static
     {
         $this->countryCode = $countryCode;
+
+        return $this;
+    }
+
+    public function getSexuality(): ?Sexuality
+    {
+        return $this->sexuality;
+    }
+
+    public function setSexuality(?Sexuality $sexuality): static
+    {
+        $this->sexuality = $sexuality;
 
         return $this;
     }
