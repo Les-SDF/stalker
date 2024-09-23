@@ -11,6 +11,8 @@ use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
+use InvalidArgumentException;
 use Random\RandomException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -41,6 +43,7 @@ readonly class UserListener
      */
     public function prePersist(User $user, PrePersistEventArgs $args): void
     {
+        $this->checkProfileCodes($args);
         $user->setCreatedAt(new DateTimeImmutable());
         $user->setConnectedAt(new DateTimeImmutable());
 
@@ -55,6 +58,30 @@ readonly class UserListener
 
     public function preUpdate(User $user, PreUpdateEventArgs $args): void
     {
+        $this->checkProfileCodes($args);
         $user->setEditedAt(new DateTimeImmutable());
+    }
+
+    /**
+     * @param LifecycleEventArgs $args
+     * @return void
+     */
+    private function checkProfileCodes(LifecycleEventArgs $args): void
+    {
+        /**
+         * @var User $user
+         */
+        if (!$user = $args->getObject() instanceof User) {
+            return;
+        }
+        $repository = $args->getObjectManager()->getRepository(User::class);
+
+        if ($repository->findOneBy(['customProfileCode' => $user->getDefaultProfileCode()])) {
+            throw new InvalidArgumentException('The default profile code cannot be the same as an existing custom profile code.');
+        }
+
+        if ($repository->findOneBy(['defaultProfileCode' => $user->getCustomProfileCode()])) {
+            throw new InvalidArgumentException('The custom profile code cannot be the same as an existing default profile code.');
+        }
     }
 }
