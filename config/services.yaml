@@ -8,6 +8,7 @@ parameters:
     profile_picture_directory: '%kernel.project_dir%/public/uploads/profile_picture'
     geolocation_enabled: '%env(bool:GEOLOCATION_ENABLED)%'
     geo_api_key: '%env(string:GEO_API_KEY)%'
+    strict_validation: '%env(bool:STRICT_VALIDATION)%'
 
 services:
     # default configuration for services in *this* file

@@ -27,7 +27,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 254)]
-    #[Assert\Email(message: "The email '{{ value }}' is not a valid email.")]
+    #[Assert\Email(
+        message: "The email '{{ value }}' is not a valid email."
+    )]
     #[Assert\NotBlank]
     #[Assert\NotNull]
     private ?string $email = null;
@@ -42,16 +44,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string|null The hashed password
      */
     #[ORM\Column]
-//    #[Assert\Regex(
-//        pattern: "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).+$/",
-//        message: "The password must contain at least one lowercase letter, one uppercase letter and one digit"
-//    )]
-//    #[Assert\Length(
-//        min: 8,
-//        max: 128,
-//        minMessage: "The password must be at least 8 characters long",
-//        maxMessage: "The password must be at most 128 characters long"
-//    )]
+    #[Assert\Regex(
+        pattern: "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).+$/",
+        message: "The password must contain at least one lowercase letter, one uppercase letter and one digit",
+        groups: ["strict_validation"]
+    )]
+    #[Assert\Length(
+        min: 8,
+        max: 128,
+        minMessage: "The password must be at least 8 characters long",
+        maxMessage: "The password must be at most 128 characters long",
+        groups: ["strict_validation"]
+    )]
     private ?string $password = null;
 
     #[ORM\Column(nullable: true, enumType: Gender::class)]
@@ -87,6 +91,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $phoneNumber = null;
 
+    /**
+     * ISO 3166-1 alpha-2 country code
+     */
     #[ORM\Column(length: 2, nullable: true)]
     private ?string $countryCode = null;
 

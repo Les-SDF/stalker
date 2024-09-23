@@ -9,6 +9,7 @@ use App\Service\FlashMessageHelperInterface;
 use App\Service\UserManagerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -17,7 +18,9 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class AuthenticationController extends AbstractController
 {
     #[Route('/sign-up', name: 'sign_up', methods: ['POST'])]
-    public function signUp(Request                     $request,
+    public function signUp(#[Autowire('%strict_validation%')]
+                           bool                        $strictValidation,
+                           Request                     $request,
                            UserManagerInterface        $userManager,
                            EntityManagerInterface      $entityManager,
                            FlashMessageHelperInterface $flashMessageHelper): Response
@@ -27,7 +30,11 @@ class AuthenticationController extends AbstractController
             return $this->redirectToRoute('homepage');
         }
         $user = new User();
-        $form = $this->createForm(SignUpType::class, $user);
+        $form = $this->createForm(SignUpType::class, $user, [
+            'validation_groups' => $strictValidation
+                ? ['Default', 'strict_validation']
+                : ['Default']
+        ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $userManager->hashPassword(
