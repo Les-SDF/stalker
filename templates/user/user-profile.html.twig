@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détails de l'utilisateur{% endblock %}
+{% block title %}{{ user.firstname }} {{ user.lastname }}{% endblock %}
 
 {% block body %}
     {% include "user/modals/delete.twig" with {'user': user}%}
