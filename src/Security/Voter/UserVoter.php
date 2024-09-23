@@ -5,7 +5,6 @@ namespace App\Security\Voter;
 use App\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 final class UserVoter extends AbstractVoter
@@ -26,7 +25,7 @@ final class UserVoter extends AbstractVoter
          * @var User $subject
          * @var UserInterface $user
          */
-        if (!$user = $token->getUser() instanceof User) {
+        if (!($user = $token->getUser()) instanceof User) {
             return false;
         }
 
