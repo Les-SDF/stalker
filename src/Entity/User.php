@@ -13,7 +13,6 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\HasLifecycleCallbacks]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ["email"], message: "The email {{ value }} is already used")]
@@ -86,25 +85,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 2, nullable: true)]
     private ?string $countryCode = null;
-
-    #[ORM\PrePersist]
-    public function prePersist(): void
-    {
-        if ($this->visibility === null) {
-            $this->visibility = Visibility::Public;
-        }
-        if ($this->gender === null) {
-            $this->gender = Gender::Unspecified;
-        }
-        $this->connectedAt = new DateTimeImmutable();
-        $this->createdAt = new DateTimeImmutable();
-    }
-
-    #[ORM\PreUpdate]
-    public function preUpdate(): void
-    {
-        $this->editedAt = new DateTimeImmutable();
-    }
 
     public function getId(): ?int
     {
