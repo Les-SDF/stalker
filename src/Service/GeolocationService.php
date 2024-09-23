@@ -25,12 +25,12 @@ readonly class GeolocationService implements GeolocationServiceInterface
      * @throws DecodingExceptionInterface
      * @throws ClientExceptionInterface
      */
-    public function getCountryCodeFromIp(string $ip): ?string
+    public function getCountryCode(): ?string
     {
         $response = $this->client->request('GET', 'https://api.ipgeolocation.io/ipgeo', [
             'query' => [
                 'apiKey' => $this->geoApiKey,
-                'ip' => $ip,
+                'ip' => $_SERVER['REMOTE_ADDR'],
             ],
         ]);
 

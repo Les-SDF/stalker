@@ -54,7 +54,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 //    )]
     private ?string $password = null;
 
-    #[ORM\Column(type: "string", enumType: Gender::class)]
+    #[ORM\Column(nullable: true, enumType: Gender::class)]
     private ?Gender $gender = null;
 
     #[ORM\Column(nullable: true, enumType: Sexuality::class)]

@@ -17,5 +17,5 @@ interface GeolocationServiceInterface
      * @throws DecodingExceptionInterface
      * @throws ClientExceptionInterface
      */
-    public function getCountryCodeFromIp(string $ip): ?string;
+    public function getCountryCode(): ?string;
 }
