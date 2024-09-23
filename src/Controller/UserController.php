@@ -8,6 +8,7 @@ use App\Form\SignInType;
 use App\Form\SignUpType;
 use App\Form\UpdateType;
 use App\Repository\UserRepository;
+use App\Service\CountryService;
 use App\Service\ProfileCodeRedirectorInterface;
 use App\Service\UserManagerInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,6 +32,7 @@ class UserController extends AbstractController
     #[Route('/users/{code}/update', name: 'update_user', methods: ['GET', 'POST'])]
     public function updateUser(string                         $code,
                                UserRepository                 $repository,
+                               CountryService                 $country,
                                ProfileCodeRedirectorInterface $profileCodeRedirector): Response
     {
         if (!$user = $repository->findByProfileCode($code)) {
@@ -54,20 +56,7 @@ class UserController extends AbstractController
             'action' => $this->generateUrl('update_user', ['code' => $user->getCustomProfileCode() ?? $user->getDefaultProfileCode()]),
         ]);
 
-        $client = HttpClient::create();
-        $response = $client->request('GET', 'https://restcountries.com/v3.1/all');
-        $countries = $response->toArray();
-
-        $countriesList = [];
-        foreach ($countries as $country) {
-            if (!isset($countriesList[$country['cca2']])) {
-                $countriesList[$country['cca2']] = [
-                    'country' => $country['name']['common'],
-                    'countryCode' => $country['cca2'],
-                ];
-            }
-        }
-
+        $countriesList = $country->getCountries();
 
         return $this->render('user/profile-update.html.twig', [
             'signInForm' => $signInForm,
