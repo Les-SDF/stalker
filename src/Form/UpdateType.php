@@ -81,7 +81,6 @@ class UpdateType extends AbstractType
                 'label' => 'Phone number',
                 'mapped' => true,
             ])
-            ->add('countryCode')
         ;
     }
 

@@ -19,9 +19,18 @@
             </div>
 
             <div>
-                {{ form_label(form.countryCode, 'Pays', {'label_attr': {'class': 'text-font-900 mt-2  mb-2 block text-sm font-medium'}}) }}
-                {{ form_widget(form.countryCode, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
+                <label for="country" class="text-font-900 mb-2 mt-2 block text-sm font-medium">Country</label>
+                <div class="relative">
+                    <select id="country" name="country" class="text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm">
+                        {% for code, language in country_codes %}
+                            <option value="{{ code }}">
+                                {{ language.language }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
+
 
             <div>
                 {{ form_label(form.gender, 'Gender', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}

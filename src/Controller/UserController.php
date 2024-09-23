@@ -15,6 +15,7 @@ use Random\RandomException;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -53,10 +54,28 @@ class UserController extends AbstractController
             'action' => $this->generateUrl('update_user', ['code' => $user->getCustomProfileCode() ?? $user->getDefaultProfileCode()]),
         ]);
 
+        $client = HttpClient::create();
+        $response = $client->request('GET', 'https://restcountries.com/v3.1/all');
+        $countries = $response->toArray();
+
+        $languages = [];
+        foreach ($countries as $country) {
+            if (isset($country['languages'])) {
+                foreach ($country['languages'] as $code => $language) {
+                    $languages[$country['cca2']] = [
+                        'language' => $language,
+                        'countryCode' => $country['cca2'] ?? 'US',
+                    ];
+                }
+            }
+        }
+
+
         return $this->render('user/profile-update.html.twig', [
             'signInForm' => $signInForm,
             'signUpForm' => $signUpForm,
-            'form' => $update
+            'form' => $update,
+            'country_codes' => $languages
         ]);
     }
 
