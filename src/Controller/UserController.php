@@ -58,15 +58,13 @@ class UserController extends AbstractController
         $response = $client->request('GET', 'https://restcountries.com/v3.1/all');
         $countries = $response->toArray();
 
-        $languages = [];
+        $countriesList = [];
         foreach ($countries as $country) {
-            if (isset($country['languages'])) {
-                foreach ($country['languages'] as $code => $language) {
-                    $languages[$country['cca2']] = [
-                        'language' => $language,
-                        'countryCode' => $country['cca2'] ?? 'US',
-                    ];
-                }
+            if (!isset($countriesList[$country['cca2']])) {
+                $countriesList[$country['cca2']] = [
+                    'country' => $country['name']['common'],
+                    'countryCode' => $country['cca2'],
+                ];
             }
         }
 
@@ -75,7 +73,7 @@ class UserController extends AbstractController
             'signInForm' => $signInForm,
             'signUpForm' => $signUpForm,
             'form' => $update,
-            'country_codes' => $languages
+            'country_codes' => $countriesList
         ]);
     }
 
