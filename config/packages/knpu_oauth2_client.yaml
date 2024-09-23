@@ -1,0 +1,9 @@
+knpu_oauth2_client:
+    clients:
+        steam:
+            type: generic
+            client_id: '%env(string:STEAM_API)%'
+            client_secret: ''
+            redirect_route: steam_check
+            redirect_params: {}
+            provider_class: App\Security\SteamProvider
