@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Enum\Gender;
 use App\Form\SignInType;
 use App\Form\SignUpType;
 use App\Form\UpdateType;
@@ -49,7 +50,7 @@ class UserController extends AbstractController
         ]);
         $update = $this->createForm(UpdateType::class, $user, [
             'method' => 'POST',
-            'action' => $this->generateUrl('update_user', ['code' => $user->getCustomProfileCode() ?? $user->getDefaultProfileCode()])
+            'action' => $this->generateUrl('update_user', ['code' => $user->getCustomProfileCode() ?? $user->getDefaultProfileCode()]),
         ]);
 
         return $this->render('user/profile-update.html.twig', [

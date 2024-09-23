@@ -3,33 +3,43 @@
 {% block body %}
     <div id="UpdateProfile" tabindex="-1"
          class="flex max-h-full w-full justify-center overflow-y-auto overflow-x-hidden p-8 md:inset-0">
-        <div class="w-96 flex-col space-y-4 py-8 px-8 rounded-xl shadow">
+        <div class="w-96 flex-col space-y-6 py-8 px-8 rounded-xl shadow">
             <h3 class="text-font-900 mb-4 text-xl font-medium">Update your profile</h3>
 
             {{ form_start(form) }}
 
             <div>
-                {{ form_label(form.email, 'Email', {'label_attr': {'class': 'text-font-900 mb-2 block text-sm font-medium'}}) }}
+                {{ form_label(form.email, 'Email', {'label_attr': {'class': 'text-font-900 mb-2 mt-2 block text-sm font-medium'}}) }}
                 {{ form_widget(form.email, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
             </div>
 
             <div>
-                {{ form_label(form.phoneNumber, 'Tél', {'label_attr': {'class': 'text-font-900 mb-2 block text-sm font-medium'}}) }}
+                {{ form_label(form.phoneNumber, 'Tél', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}
                 {{ form_widget(form.phoneNumber, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
             </div>
 
             <div>
-                {{ form_label(form.countryCode, 'Pays', {'label_attr': {'class': 'text-font-900 mb-2 block text-sm font-medium'}}) }}
+                {{ form_label(form.countryCode, 'Pays', {'label_attr': {'class': 'text-font-900 mt-2  mb-2 block text-sm font-medium'}}) }}
                 {{ form_widget(form.countryCode, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
             </div>
 
             <div>
-                {{ form_label(form.password, 'Password', {'label_attr': {'class': 'text-font-900 mb-2 block text-sm font-medium'}}) }}
+                {{ form_label(form.gender, 'Gender', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}
+                {{ form_widget(form.gender, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
+            </div>
+
+            <div>
+                {{ form_label(form.visibility, 'Visibility', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}
+                {{ form_widget(form.visibility, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
+            </div>
+
+            <div>
+                {{ form_label(form.password, 'Password', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}
                 {{ form_widget(form.password, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
             </div>
 
             <div>
-                {{ form_label(form.customProfileCode, 'Profile photo', {'label_attr': {'class': 'text-font-900 mb-2 block text-sm font-medium'}}) }}
+                {{ form_label(form.customProfileCode, 'Profile photo', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}
                 {{ form_widget(form.customProfileCode, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 text-sm'}}) }}
             </div>
 

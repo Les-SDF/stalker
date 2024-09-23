@@ -3,10 +3,13 @@
 namespace App\Form;
 
 use App\Entity\User;
+use App\Enum\Gender;
+use App\Enum\Visibility;
 use libphonenumber\PhoneNumberType;
 use MongoDB\BSON\Regex;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -23,6 +26,16 @@ class UpdateType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $genders = Gender::cases();
+        $genderChoices = [];
+        foreach ($genders as $gender) {
+            $genderChoices[$gender->name] = $gender->value;
+        }
+        $visi = Visibility::cases();
+        $visiChoice = [];
+        foreach ($visi as $v) {
+            $visiChoice[$v->name] = $v->value;
+        }
         $builder
             ->add('email', EMAILType::class, [
                 'label' => 'Email',
@@ -42,8 +55,16 @@ class UpdateType extends AbstractType
                     new Length(min: 8, max: 30, minMessage: 'Your password must be at least {{ limit }} characters long.',maxMessage: 'Your password must be at least {{ limit }} characters long.'),
                 ]
             ])
- //           ->add('gender')
- //           ->add('visibility')
+            ->add('gender', ChoiceType::class, [
+                'label' => 'Gender',
+                'choices' => $genderChoices,
+                'mapped' => false,
+            ])
+            ->add('visibility', ChoiceType::class, [
+                'label' => 'Visibility',
+                'choices' => $visiChoice,
+                'mapped' => false,
+            ])
             ->add('customProfileCode', FileType::class, [
                 'label' => 'Profile photo',
                 'mapped' => false,
