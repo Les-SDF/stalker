@@ -8,6 +8,7 @@ use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +25,7 @@ class SteamController extends AbstractController
     #[Route('/steam/check', name: 'steam_check')]
     public function check(#[Autowire('%steam_api%')]
                           string $steamApi,
-                          Request $request): RedirectResponse
+                          Request $request): RedirectResponse|JsonResponse
     {
         $requestParams = $request->query->all();
 
@@ -43,8 +44,8 @@ class SteamController extends AbstractController
             if ($response->getStatusCode() === 200) {
                 $data = $response->toArray();
 
-                var_dump($data);
-                exit();
+                $playerInfo = $data['response']['players'][0];
+                return new JsonResponse($playerInfo);
             }
 
 
