@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use App\Enum\Gender;
+use App\Enum\Sexuality;
 use App\Enum\Visibility;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -23,16 +24,11 @@ class UpdateType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $genders = Gender::cases();
-        $genderChoices = [];
-        foreach ($genders as $gender) {
-            $genderChoices[$gender->name] = $gender->value;
+        $countryChoices = [];
+        foreach ($options['countries'] as $country) {
+            $countryChoices[$country['country']] = $country['countryCode'];
         }
-        $visi = Visibility::cases();
-        $visiChoice = [];
-        foreach ($visi as $v) {
-            $visiChoice[$v->name] = $v->value;
-        }
+
         $builder
             ->add('email', EMAILType::class, [
                 'label' => 'Email',
@@ -54,13 +50,41 @@ class UpdateType extends AbstractType
             ])
             ->add('gender', ChoiceType::class, [
                 'label' => 'Gender',
-                'choices' => $genderChoices,
-                'mapped' => false,
+                'choices' => Gender::cases(),
+                'choice_label' => function(Gender $gender) {
+                    return $gender->name;
+                },
+                'choice_value' => function(?Gender $gender) {
+                    return $gender ? $gender->value : '';
+                },
+                'mapped' => true,
+            ])
+            ->add('sexuality', ChoiceType::class, [
+                'label' => 'Sexuality',
+                'choices' => Sexuality::cases(),
+                'choice_label' => function(Sexuality $sexuality) {
+                    return $sexuality->name;
+                },
+                'choice_value' => function(?Sexuality $sexuality) {
+                    return $sexuality ? $sexuality->value : '';
+                },
+                'mapped' => true,
             ])
             ->add('visibility', ChoiceType::class, [
                 'label' => 'Visibility',
-                'choices' => $visiChoice,
-                'mapped' => false,
+                'choices' => Visibility::cases(),
+                'choice_label' => function(Visibility $visibility) {
+                    return $visibility->name;
+                },
+                'choice_value' => function(?Visibility $visibility) {
+                    return $visibility ? $visibility->value : '';
+                },
+                'mapped' => true,
+            ])
+            ->add('countryCode', ChoiceType::class, [
+                'label' => 'Country',
+                'choices' => $countryChoices,
+                'mapped' => true,
             ])
             ->add('profilePicture', FileType::class, [
                 'label' => 'Profile photo',
@@ -85,6 +109,7 @@ class UpdateType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'countries' => [],
         ]);
     }
 }

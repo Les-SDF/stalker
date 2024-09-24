@@ -7,6 +7,7 @@ use App\Form\SignUpType;
 use App\Form\UpdateType;
 use App\Repository\UserRepository;
 use App\Service\CountryService;
+use App\Service\FlashMessageHelper;
 use App\Service\UserManagerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Random\RandomException;
@@ -26,8 +27,13 @@ class UserController extends AbstractController
     #[Route('/users/{profileCode}/update', name: 'update_user', methods: ['GET', 'POST'])]
     public function updateUser(string         $profileCode,
                                UserRepository $repository,
-                               CountryService $country): Response
+                               CountryService $country,
+                               Request $request,
+                               EntityManagerInterface $entityManager,
+                               FlashMessageHelper $flashMessageHelper): Response
     {
+        $countriesList = $country->getCountries();
+
         if (!$user = $repository->findByProfileCode($profileCode)) {
             $this->addFlash('error', 'User not found');
             return $this->redirectToRoute('homepage');
@@ -46,16 +52,22 @@ class UserController extends AbstractController
             'action' => $this->generateUrl('update_user', [
                 'profileCode' => $user->getProfileCode()
             ]),
+            'countries' => $countriesList,
         ]);
-
-        $countriesList = $country->getCountries();
-
-        return $this->render('user/profile-update.html.twig', [
-            'signInForm' => $signInForm,
-            'signUpForm' => $signUpForm,
-            'form' => $update,
-            'country_codes' => $countriesList
-        ]);
+        $update->handleRequest($request);
+        if($update->isSubmitted() && $update->isValid()) {
+            $entityManager->persist($user);
+            $entityManager->flush();
+            return $this->redirectToRoute('user_profile', ['profileCode' => $user->getProfileCode()]);
+        } else {
+            $flashMessageHelper->addFormErrorsAsFlashMessages($update);
+            return $this->render('user/profile-update.html.twig', [
+                'signInForm' => $signInForm,
+                'signUpForm' => $signUpForm,
+                'form' => $update,
+                'country_codes' => $countriesList
+            ]);
+        }
     }
 
     #[Route('/users/{profileCode}/delete', name: 'delete_user', options: ['expose' => true], methods: ['DELETE'])]

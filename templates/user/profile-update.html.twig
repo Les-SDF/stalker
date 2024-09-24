@@ -17,30 +17,23 @@
                 {{ form_label(form.phoneNumber, 'Tél', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}
                 {{ form_widget(form.phoneNumber, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
             </div>
-
             <div>
-                <label for="country" class="text-font-900 mb-2 mt-2 block text-sm font-medium">Country</label>
-                <div class="relative">
-                    <select id="country" name="country" class="text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm">
-                        {% for code, country in country_codes %}
-                            <option value="{{ code }}">
-                                {{ country.country }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
+                {{ form_label(form.countryCode, 'Country', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}
+                {{ form_widget(form.countryCode, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
             </div>
-
             <div>
                 {{ form_label(form.gender, 'Gender', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}
                 {{ form_widget(form.gender, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
+            </div>
+            <div>
+                {{ form_label(form.sexuality, 'Sexuality', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}
+                {{ form_widget(form.sexuality, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
             </div>
 
             <div>
                 {{ form_label(form.visibility, 'Visibility', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}
                 {{ form_widget(form.visibility, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
             </div>
-
             <div>
                 {{ form_label(form.password, 'Password', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}
                 {{ form_widget(form.password, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
