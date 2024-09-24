@@ -15,8 +15,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_LOGIN', fields: ['login'])]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_PROFILE_CODE', fields: ['profileCode'])]
+#[UniqueEntity(fields: ["login"], message: "The login {{ value }} is already used")]
 #[UniqueEntity(fields: ["email"], message: "The email {{ value }} is already used")]
 #[UniqueEntity(fields: ["profileCode"], message: "The profile code {{ value }} is already used")]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -25,6 +27,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\Column(length: 16)]
+    #[Assert\Regex(
+        pattern: "/^[a-z0-9]+$/",
+        message: "The login must contain only lowercase letters and digits"
+    )]
+    #[Assert\Length(
+        min: 2,
+        max: 16,
+        minMessage: "The login must be at least 2 characters long",
+        maxMessage: "The login must be at most 16 characters long"
+    )]
+    #[Assert\NotBlank]
+    #[Assert\NotNull]
+    private ?string $login = null;
 
     #[ORM\Column(length: 254)]
     #[Assert\Email(
@@ -134,7 +151,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string) $this->login;
     }
 
     /**
@@ -337,6 +354,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastname(?string $lastname): static
     {
         $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    public function getLogin(): ?string
+    {
+        return $this->login;
+    }
+
+    public function setLogin(string $login): static
+    {
+        $this->login = $login;
 
         return $this;
     }
