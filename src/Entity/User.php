@@ -78,8 +78,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         pattern: "/^[a-zA-Z0-9]+$/",
         message: "The profile code must contain only letters and digits"
     )]
-    #[Assert\NotBlank]
-    #[Assert\NotNull]
     private ?string $profileCode = null;
 
     #[ORM\Column]
