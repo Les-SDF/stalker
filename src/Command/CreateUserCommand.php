@@ -14,6 +14,7 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+// TODO: Rendre compatible avec les login comme identifiant d'utilisateur
 #[AsCommand(
     name: 'create:user',
     description: 'Create a new user',

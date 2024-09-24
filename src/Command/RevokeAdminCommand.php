@@ -13,6 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+// TODO: Faire indiquer le login à la place de l'id de l'utilisateur
 #[AsCommand(
     name: "revoke:admin",
     description: "Revoke admin access to a user",
