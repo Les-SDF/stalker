@@ -23,6 +23,7 @@ class UserController extends AbstractController
         return $this->redirectToRoute('homepage');
     }
 
+    // TODO: Passer cette route en POST only, elle redirigera userProfile
     #[Route('/users/{profileCode}/update', name: 'update_user', methods: ['GET', 'POST'])]
     public function updateUser(string         $profileCode,
                                UserRepository $repository,
@@ -75,6 +76,10 @@ class UserController extends AbstractController
         return $this->redirectToRoute('homepage');
     }
 
+    /**
+     * TODO: Rajouter la vérification dynamique de la disponibilité du code de profile avec requête asynchrones en
+     *  appelant cette route avec AJAX
+     */
     #[Route('/users/check-profile-code-availability', name: 'check_profile_code_availability', options: ['expose' => true], methods: ['POST'])]
     public function checkProfileCodeAvailability(Request              $request,
                                                  UserManagerInterface $userManager): Response

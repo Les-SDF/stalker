@@ -4,13 +4,17 @@ namespace App\Form;
 
 use App\Entity\User;
 use App\Enum\Gender;
+use App\Enum\Sexuality;
 use App\Enum\Visibility;
+use App\Service\CountryServiceInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
@@ -21,64 +25,49 @@ use Symfony\Component\Validator\Constraints\File;
 
 class UpdateType extends AbstractType
 {
+    public function __construct(private readonly CountryServiceInterface $countryService)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $genders = Gender::cases();
-        $genderChoices = [];
-        foreach ($genders as $gender) {
-            $genderChoices[$gender->name] = $gender->value;
-        }
-        $visi = Visibility::cases();
-        $visiChoice = [];
-        foreach ($visi as $v) {
-            $visiChoice[$v->name] = $v->value;
-        }
+        dd($this->countryService->getCountries());
         $builder
-            ->add('email', EMAILType::class, [
-                'label' => 'Email',
-                'mapped' => true,
-                'constraints' => [
-                    new NotBlank(),
-                    new NotNull(),
-                    new Email(['message' => 'Please enter a valid email address']),
-                ]
-            ])
-            ->add('password', PasswordType::class,[
-                'label' => 'Password',
+            ->add('email', EmailType::class)
+            ->add('firstname', TextType::class)
+            ->add('lastname', TextType::class)
+            ->add('countryCode', ChoiceType::class, [
+                'label' => 'Country',
+                'choices' => $this->countryService->getCountries(),
                 'mapped' => false,
-                'constraints' => [
-                    new NotBlank(),
-                    new NotNull(),
-                    new Length(min: 8, max: 30, minMessage: 'Your password must be at least {{ limit }} characters long.',maxMessage: 'Your password must be at least {{ limit }} characters long.'),
-                ]
             ])
+            ->add('pronouns', TextType::class)
             ->add('gender', ChoiceType::class, [
                 'label' => 'Gender',
-                'choices' => $genderChoices,
+                'choices' => $this->enumsToChoices(Gender::cases()),
+                'mapped' => false,
+            ])
+            ->add('sexuality', ChoiceType::class, [
+                'label' => 'Sexuality',
+                'choices' => $this->enumsToChoices(Sexuality::cases()),
                 'mapped' => false,
             ])
             ->add('visibility', ChoiceType::class, [
                 'label' => 'Visibility',
-                'choices' => $visiChoice,
+                'choices' => $this->enumsToChoices(Visibility::cases()),
                 'mapped' => false,
             ])
-            ->add('profilePicture', FileType::class, [
-                'label' => 'Profile photo',
-                'mapped' => false,
-                'required' => false,
-                'attr' => [
-                    'accept' => 'image/png, image/jpeg, image/jpg',
-                ],
-                'constraints' => [
-                    new File(maxSize: '10M', maxSizeMessage: 'File too large. Maximum upload size is {{ limit }} MB', extensions: ['png', 'jpg', 'jpeg'], extensionsMessage: ' format not allowed')
-                ],
-            ])
-            ->add('phoneNumber', NumberType::class,
-            [
-                'label' => 'Phone number',
-                'mapped' => true,
-            ])
+            ->add('phoneNumber', NumberType::class)
+            ->add('submit', SubmitType::class);
         ;
+    }
+
+    public function enumsToChoices(array $enum): array
+    {
+        foreach ($enum as $e) {
+            $choices[$e->name] = $e->value;
+        }
+        return $choices ?? [];
     }
 
     public function configureOptions(OptionsResolver $resolver): void

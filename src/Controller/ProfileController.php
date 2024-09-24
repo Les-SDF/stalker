@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\SignInType;
 use App\Form\SignUpType;
+use App\Form\UpdateType;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,10 +32,17 @@ class ProfileController extends AbstractController
             'method' => 'POST',
             'action' => $this->generateUrl('sign_up')
         ]);
+        $updateForm = $this->createForm(UpdateType::class, $newUser, [
+            'method' => 'POST',
+            'action' => $this->generateUrl('update_user', [
+                'profileCode' => $user->getProfileCode()
+            ]),
+        ]);
 
         return $this->render('user/user-profile.html.twig', [
             'signInForm' => $signInForm,
             'signUpForm' => $signUpForm,
+            'updateForm' => $updateForm,
             'user' => $user
         ]);
     }

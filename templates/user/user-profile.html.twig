@@ -30,6 +30,58 @@
             </div>
         </div>
 
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="px-6 py-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-font-900 dark:text-white">{{ user.firstname }} {{ user.lastname }}'s profile</h3>
+                {{ form_start(updateForm, {"attr": {"class": "space-y-6"}}) }}
+                <div>
+                    {{ form_label(updateForm.email, "Email", {
+                        "label_attr": {
+                            "class": "block mb-2 text-sm font-medium text-font-900 dark:text-white"
+                        }
+                    }) }}
+                    {{ form_widget(updateForm.email, {
+                        "attr": {
+                            "class": "bg-gray-50 border border-gray-300 text-font-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white",
+                            "placeholder": "johndoe@company.com"
+                        }
+                    }) }}
+                </div>
+                <div>
+                    {{ form_label(updateForm.pronouns, "Pronouns", {
+                        "label_attr": {
+                            "class": "block mb-2 text-sm font-medium text-font-900 dark:text-white"
+                        }
+                    }) }}
+                    {{ form_widget(updateForm.pronouns, {
+                        "attr": {
+                            "class": "bg-gray-50 border border-gray-300 text-font-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        }
+                    }) }}
+                </div>
+                <div>
+                    {{ form_label(updateForm.phoneNumber, "Phone number", {
+                        "label_attr": {
+                            "class": "block mb-2 text-sm font-medium text-font-900 dark:text-white"
+                        }
+                    }) }}
+                    {{ form_widget(updateForm.phoneNumber, {
+                        "attr": {
+                            "class": "bg-gray-50 border border-gray-300 text-font-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white",
+                            "placeholder": "06 12 34 56 78"
+                        }
+                    }) }}
+                </div>
+                {{ form_widget(updateForm.submit, {
+                    "label": "Save",
+                    "attr": {
+                        "class": "w-full text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                    }
+                }) }}
+                {{ form_rest(updateForm) }}
+                {{ form_end(updateForm) }}
+            </div>
+        </div>
 
         <div class="bg-white shadow-md rounded-lg p-4 border-2 border-gray-50 mb-6">
             <h3 class="text-lg font-semibold mb-2">Adresse Principale</h3>
