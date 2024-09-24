@@ -4,7 +4,8 @@
 
 namespace App\Controller;
 
-use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
+
+use App\Security\SteamProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpClient\HttpClient;
@@ -17,7 +18,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class SteamController extends AbstractController
 {
     #[Route('/steam/connect', name: 'steam_connect')]
-    public function connect(OAuth2Client $steamClient)
+    public function connect(SteamProvider $steamClient)
     {
         return $steamClient->redirect();
     }
