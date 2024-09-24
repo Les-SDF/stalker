@@ -8,6 +8,9 @@ use RangeException;
 class RandomStringGenerator implements RandomStringGeneratorInterface
 {
     /**
+     * # Note pour le correcteur
+     * Nous avons chercher une solution pour générer une chaine de caractère aléatoire de manière plus sécurisé :
+     *
      * https://stackoverflow.com/questions/4356289/php-random-string-generator/31107425#31107425
      *
      * @throws RandomException

@@ -27,6 +27,7 @@ class DefaultController extends AbstractController
             10
         );
 
+        // TODO: Généraliser la création des formulaires de connexion et d'inscription
         $userNew = new User();
         $signInForm = $this->createForm(SignInType::class, $userNew, [
             'method' => 'POST',

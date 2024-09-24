@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\SignInType;
 use App\Form\SignUpType;
+use App\Form\UpdateType;
 use App\Form\UpdateCodeType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,11 +41,18 @@ class ProfileController extends AbstractController
             'method' => 'POST',
             'action' => $this->generateUrl('user_profile', ['profileCode' => $user->getProfileCode()])
         ]);
+        $updateForm = $this->createForm(UpdateType::class, $newUser, [
+            'method' => 'POST',
+            'action' => $this->generateUrl('update_user', [
+                'profileCode' => $user->getProfileCode()
+            ]),
+        ]);
 
         return $this->render('user/user-profile.html.twig', [
             'signInForm' => $signInForm,
             'signUpForm' => $signUpForm,
             'updateCodeForm' => $updateCodeForm,
+            'updateForm' => $updateForm,
             'user' => $user
         ]);
     }

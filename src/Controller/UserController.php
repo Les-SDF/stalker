@@ -24,6 +24,7 @@ class UserController extends AbstractController
         return $this->redirectToRoute('homepage');
     }
 
+    // TODO: Passer cette route en POST seulement, elle ne fera plus que valider les données et redirigera vers user_profile
     #[Route('/users/{profileCode}/update', name: 'update_user', methods: ['GET', 'POST'])]
     public function updateUser(string         $profileCode,
                                UserRepository $repository,
