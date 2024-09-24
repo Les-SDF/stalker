@@ -2,19 +2,20 @@
 
 namespace App\Service;
 
-use App\Entity\User;
 use Random\RandomException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 interface UserManagerInterface
 {
-    public function hashPassword(User $user, ?string $password): void;
+    public function hashPassword(UserInterface $user, ?string $password): void;
 
-    public function storeProfilePicture(User $user, ?UploadedFile $file): void;
+    public function storeProfilePicture(UserInterface $user, ?UploadedFile $file): void;
+
+    public function isProfileCodeAvailable(string $profileCode): bool;
 
     /**
      * @throws RandomException
      */
-    public function generateDefaultProfileCode(User $user): void;
+    public function generateProfileCode(UserInterface $user): void;
 }

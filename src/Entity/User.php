@@ -16,9 +16,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_PROFILE_CODE', fields: ['profileCode'])]
 #[UniqueEntity(fields: ["email"], message: "The email {{ value }} is already used")]
-#[UniqueEntity(fields: ["defaultProfileCode"], message: "The default profile code {{ value }} is already used")]
-#[UniqueEntity(fields: ["customProfileCode"], message: "The custom profile code {{ value }} is already used")]
+#[UniqueEntity(fields: ["profileCode"], message: "The profile code {{ value }} is already used")]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -68,16 +68,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?Visibility $visibility = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $defaultProfileCode = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(
         min: 4,
         max: 255,
-        minMessage: "The custom profile code must be at least 4 characters long",
-        maxMessage: "The custom profile code must be at most 255 characters long"
+        minMessage: "The profile code must be at least 4 characters long",
+        maxMessage: "The profile code must be at most 255 characters long"
     )]
-    private ?string $customProfileCode = null;
+    #[Assert\Regex(
+        pattern: "/^[a-zA-Z0-9]+$/",
+        message: "The profile code must contain only letters and digits"
+    )]
+    #[Assert\NotBlank]
+    #[Assert\NotNull]
+    private ?string $profileCode = null;
 
     #[ORM\Column]
     private ?DateTimeImmutable $connectedAt = null;
@@ -208,26 +211,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getDefaultProfileCode(): ?string
+    public function getProfileCode(): ?string
     {
-        return $this->defaultProfileCode;
+        return $this->profileCode;
     }
 
-    public function setDefaultProfileCode(string $defaultProfileCode): static
+    public function setProfileCode(string $profileCode): static
     {
-        $this->defaultProfileCode = $defaultProfileCode;
-
-        return $this;
-    }
-
-    public function getCustomProfileCode(): ?string
-    {
-        return $this->customProfileCode;
-    }
-
-    public function setCustomProfileCode(string $customProfileCode): static
-    {
-        $this->customProfileCode = $customProfileCode;
+        $this->profileCode = $profileCode;
 
         return $this;
     }

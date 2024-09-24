@@ -5,10 +5,7 @@ namespace App\Form;
 use App\Entity\User;
 use App\Enum\Gender;
 use App\Enum\Visibility;
-use libphonenumber\PhoneNumberType;
-use MongoDB\BSON\Regex;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -65,7 +62,7 @@ class UpdateType extends AbstractType
                 'choices' => $visiChoice,
                 'mapped' => false,
             ])
-            ->add('customProfileCode', FileType::class, [
+            ->add('profilePicture', FileType::class, [
                 'label' => 'Profile photo',
                 'mapped' => false,
                 'required' => false,

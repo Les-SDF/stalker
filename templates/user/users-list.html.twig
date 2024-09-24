@@ -10,7 +10,8 @@
         <h1 class="text-2xl font-bold mb-4">Utilisateurs</h1>
         <div>
             {% for user in pagination %}
-                <a href="{{ path('user_profile', { 'code': user.customProfileCode ?? user.defaultProfileCode }) }}">
+                <a href="{{ path('user_profile', { profileCode: user.profileCode })
+                }}">
                     <div class="bg-white border border-gray-200 rounded-lg shadow-md p-4 flex items-center mb-5">
                         <div class="w-16 h-16 bg-gray-300 rounded-full flex-shrink-0 mr-4">
                             <img src="{{ asset("img/default-profile-picture.jpg") }}" alt="{{ user.id }}" class="w-full h-full object-cover rounded-full" height="50px" width="50px">

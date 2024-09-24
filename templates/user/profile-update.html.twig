@@ -47,8 +47,11 @@
             </div>
 
             <div>
-                {{ form_label(form.customProfileCode, 'Profile photo', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}
-                {{ form_widget(form.customProfileCode, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 text-sm'}}) }}
+                {{ form_label(form.profilePicture, 'Profile photo', {'label_attr': {'class': 'text-font-900 mb-2 mt-2
+                block
+                text-sm font-medium'}}) }}
+                {{ form_widget(form.profilePicture, {'attr': {'class': 'text-font-900 focus:ring-primary-500
+                focus:border-primary-500 block w-full p-2.5 text-sm'}}) }}
             </div>
 
             <button class="bg-primary-700 hover:bg-primary-800 focus:ring-primary-300 w-full rounded-lg px-5 py-2.5 text-center text-sm font-medium text-white focus:outline-none focus:ring-4">

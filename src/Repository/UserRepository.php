@@ -35,14 +35,13 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
-     * Finds a user by defaultProfileCode or customProfileCode.
+     * Finds a user by their profile code.
      */
-    public function findByProfileCode(string $code): ?User
+    public function findByProfileCode(string $profileCode): ?User
     {
         return $this->createQueryBuilder('u')
-            ->where('u.defaultProfileCode = :code')
-            ->orWhere('u.customProfileCode = :code')
-            ->setParameter('code', $code)
+            ->where('u.profileCode = :profileCode')
+            ->setParameter('profileCode', $profileCode)
             ->getQuery()
             ->getOneOrNullResult();
     }

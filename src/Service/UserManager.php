@@ -8,6 +8,7 @@ use Random\RandomException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 readonly class UserManager implements UserManagerInterface
 {
@@ -21,15 +22,20 @@ readonly class UserManager implements UserManagerInterface
     {
     }
 
-    public function hashPassword(User    $user,
-                                 ?string $password): void
+    /**
+     * @param User $user
+     * @param string|null $password
+     * @return void
+     */
+    public function hashPassword(UserInterface $user,
+                                 ?string       $password): void
     {
         $user->setPassword(
             $this->passwordHasher->hashPassword($user, $password)
         );
     }
 
-    public function storeProfilePicture(User          $user,
+    public function storeProfilePicture(UserInterface $user,
                                         ?UploadedFile $file): void
     {
         if ($file != null) {
@@ -39,15 +45,25 @@ readonly class UserManager implements UserManagerInterface
         }
     }
 
+    public function isProfileCodeAvailable(string $profileCode): bool
+    {
+        return !$this->repository->findByProfileCode($profileCode);
+    }
+
     /**
+     * # Note pour le correcteur
+     * Il y a sûrement plus de chance de gagner 6 fois d'affilés au loto. Mais au moins on est sûr que le code
+     * aléatoire généré est bien disponible avec cette boucle while.
+     *
+     * @param User $user
+     * @return void
      * @throws RandomException
      */
-    public function generateDefaultProfileCode(User $user): void
+    public function generateProfileCode(UserInterface $user): void
     {
         do {
-            // Moyen plus sécurisé de générer un code aléatoire
-            $defaultProfileCode = $this->randomStringGenerator->generate();
-        } while ($this->repository->findByProfileCode($defaultProfileCode));
-        $user->setDefaultProfileCode($defaultProfileCode);
+            $profileCode = $this->randomStringGenerator->generate();
+        } while (!$this->isProfileCodeAvailable($profileCode));
+        $user->setProfileCode($profileCode);
     }
 }

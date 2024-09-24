@@ -6,7 +6,6 @@ use App\Entity\User;
 use App\Form\SignInType;
 use App\Form\SignUpType;
 use App\Repository\UserRepository;
-use App\Service\ProfileCodeRedirectorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,17 +14,13 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class ProfileController extends AbstractController
 {
-    #[Route('/users/{code}', name: 'user_profile', methods: ['GET'])]
-    public function userProfile(string                         $code,
-                                UserRepository                 $repository,
-                                ProfileCodeRedirectorInterface $profileCodeRedirector): Response
+    #[Route('/users/{profileCode}', name: 'user_profile', methods: ['GET'])]
+    public function userProfile(string                         $profileCode,
+                                UserRepository                 $repository): Response
     {
-        if (!$user = $repository->findByProfileCode($code)) {
+        if (!$user = $repository->findByProfileCode($profileCode)) {
             $this->addFlash('error', 'User not found');
             return $this->redirectToRoute('homepage');
-        }
-        if ($profileCodeRedirector->isRedirectableWithCustomProfileCode($user, $code)) {
-            return $profileCodeRedirector->redirectToRouteWithCustomProfileCode('user_profile');
         }
         $newUser = new User();
         $signInForm = $this->createForm(SignInType::class, $newUser, [
@@ -44,12 +39,12 @@ class ProfileController extends AbstractController
         ]);
     }
 
-    #[Route('/users/{code}/json', name: 'user_profile_json', options: ["expose" => true], methods: ['GET'])]
-    public function userProfileJSON(string              $code,
+    #[Route('/users/{profileCode}/json', name: 'user_profile_json', options: ["expose" => true], methods: ['GET'])]
+    public function userProfileJSON(string              $profileCode,
                                     UserRepository      $repository,
                                     SerializerInterface $serializer): JsonResponse
     {
-        if (!$user = $repository->findByProfileCode($code)) {
+        if (!$user = $repository->findByProfileCode($profileCode)) {
             return new JsonResponse(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
         }
 

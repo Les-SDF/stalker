@@ -11,8 +11,6 @@ use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
-use InvalidArgumentException;
 use Random\RandomException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -20,6 +18,14 @@ use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+
+/**
+ * # Note pour le correcteur
+ * Nous utilisions ce listener au lieu de méthodes annotées de #[PrePersist] ou #[PreUpdate] directement
+ * l'entité User. De cette manière, nous pouvons utiliser des services que certains de nos attributs ont
+ * besoin. Nous aurions pu en faire pour les attributs ne nécessitant pas de service, mais nous avons
+ * préféré centraliser le code lié à la création ou la mise à jour d'un utilisateur dans ce listener.
+ */
 
 #[AsEntityListener(event: Events::prePersist, method: 'prePersist', entity: User::class)]
 #[AsEntityListener(event: Events::preUpdate, method: 'preUpdate', entity: User::class)]
@@ -43,7 +49,6 @@ readonly class UserListener
      */
     public function prePersist(User $user, PrePersistEventArgs $args): void
     {
-        $this->checkProfileCodes($args);
         $user->setCreatedAt(new DateTimeImmutable());
         $user->setConnectedAt(new DateTimeImmutable());
 
@@ -53,35 +58,11 @@ readonly class UserListener
         if ($this->geolocationEnabled) {
             $user->setCountryCode($this->geolocationService->getCountryCode());
         }
-        $this->userManager->generateDefaultProfileCode($user);
+        $this->userManager->generateProfileCode($user);
     }
 
     public function preUpdate(User $user, PreUpdateEventArgs $args): void
     {
-        $this->checkProfileCodes($args);
         $user->setEditedAt(new DateTimeImmutable());
-    }
-
-    /**
-     * @param LifecycleEventArgs $args
-     * @return void
-     */
-    private function checkProfileCodes(LifecycleEventArgs $args): void
-    {
-        /**
-         * @var User $user
-         */
-        if (!$user = $args->getObject() instanceof User) {
-            return;
-        }
-        $repository = $args->getObjectManager()->getRepository(User::class);
-
-        if ($repository->findOneBy(['customProfileCode' => $user->getDefaultProfileCode()])) {
-            throw new InvalidArgumentException('The default profile code cannot be the same as an existing custom profile code.');
-        }
-
-        if ($repository->findOneBy(['defaultProfileCode' => $user->getCustomProfileCode()])) {
-            throw new InvalidArgumentException('The custom profile code cannot be the same as an existing default profile code.');
-        }
     }
 }

@@ -13,7 +13,6 @@ final class UserVoter extends AbstractVoter
     public const VIEW = "USER_VIEW";
     public const EDIT = "USER_EDIT";
     public const DELETE = "USER_DELETE";
-    public const RESET_DEFAULT_PROFILE_CODE = "USER_RESET_DEFAULT_PROFILE_CODE";
 
     public function __construct(private readonly Security $security)
     {
@@ -34,7 +33,6 @@ final class UserVoter extends AbstractVoter
             case self::VIEW:
                 return true;
             case self::EDIT:
-            case self::RESET_DEFAULT_PROFILE_CODE:
                 if ($subject === $user) {
                     return true;
                 }
