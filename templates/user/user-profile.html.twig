@@ -3,6 +3,7 @@
 {% block title %}{{ user.firstname }} {{ user.lastname }}{% endblock %}
 
 {% block body %}
+    {% include "user/modals/profile-code.html.twig" %}
     {% include "user/modals/delete.twig" with {'user': user}%}
     <style>
         #stalker-main {
@@ -67,6 +68,11 @@
                         data-modal-target="delete-modal"
                         data-modal-toggle="delete-modal" type="button">
                     Supprimer le compte
+                </button>
+                <button data-modal-target="edit-code-modal"
+                        data-modal-toggle="edit-code-modal" type="button"
+                        class="flex items-center p-2 pl-11 w-full text-base font-normal text-font-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                    Edit Code
                 </button>
             </div>
         {% endif %}
