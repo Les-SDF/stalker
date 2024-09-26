@@ -17,7 +17,11 @@
                             <img src="{{ asset("img/default-profile-picture.jpg") }}" alt="{{ user.id }}" class="w-full h-full object-cover rounded-full" height="50px" width="50px">
                         </div>
                         <div class="ml-4">
-                            <h2 class="text-xl font-semibold">{{ user.id }}</h2>
+                            <h2 class="text-xl font-semibold">
+                                {{ (user.firstname is defined and user.firstname) and (user.lastname is defined and user.lastname)
+                                ? user.firstname ~ ' ' ~ user.lastname
+                                : user.login }}
+                            </h2>
                             <p class="text-gray-600">Email: {{ user.email }}</p>
                         </div>
                     </div>
