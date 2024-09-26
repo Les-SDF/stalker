@@ -28,4 +28,9 @@ class DefaultController extends AbstractController
             'pagination' => $pagination
         ]);
     }
+
+    public function maintenancePage(): Response
+    {
+        return $this->render('maintenance.html.twig');
+    }
 }

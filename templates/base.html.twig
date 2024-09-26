@@ -15,7 +15,6 @@
     {% endblock %}
 </head>
 <body>
-{% if maintenance == false or is_granted('ROLE_ADMIN') %}
     {% include "partials/side-navigation.html.twig" %}
     {% include "partials/flash-messages.html.twig" %}
     {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}
@@ -24,8 +23,5 @@
     {% endif %}
     {% block body %}
     {% endblock %}
-{% else %}
-    {% include('partials/maintenance.html.twig') %}
-{% endif %}
 </body>
 </html>

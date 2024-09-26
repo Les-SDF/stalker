@@ -20,4 +20,9 @@ class FlashMessageHelper implements FlashMessageHelperInterface
             $this->requestStack->getSession()->getFlashBag()->add('error', $error->getMessage());
         }
     }
+
+    public function addFlashMessage(string $content, string $type = 'error'): void
+    {
+        $this->requestStack->getSession()->getFlashBag()->add($type, $content);
+    }
 }
