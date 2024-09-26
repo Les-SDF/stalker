@@ -28,8 +28,8 @@ class FormExtension extends AbstractExtension
         return [
             new TwigFunction('signInForm', [$this, 'getSignInForm']),
             new TwigFunction('signUpForm', [$this, 'getSignUpForm']),
-            new TwigFunction('updateForm', [$this, 'getUpdateType']),
-            new TwigFunction('updateCodeForm', [$this, 'getUpdateCodeType']),
+            new TwigFunction('updateForm', [$this, 'getUpdateForm']),
+            new TwigFunction('updateCodeForm', [$this, 'getUpdateCodeForm']),
         ];
     }
 
@@ -51,21 +51,17 @@ class FormExtension extends AbstractExtension
         return $this->formManager->createForm(SignInType::class, 'sign_in')->createView();
     }
 
-    public function getUpdateType(): FormView
+    public function getUpdateForm(): FormView
     {
         return $this->formManager->createForm(UpdateType::class, 'update_user')->createView();
     }
 
-    public function getUpdateCodeType(): FormView
+    public function getUpdateCodeForm(): FormView
     {
         /**
          * @var User $user
          */
         $user = $this->security->getUser();
-        return $this->formManager->createForm(
-            type: UpdateCodeType::class,
-            route: 'update_profile_code',
-            parameters: ['profileCode' => $user->getProfileCode()]
-        )->createView();
+        return $this->formManager->createForm(UpdateCodeType::class, 'update_profile_code')->createView();
     }
 }
