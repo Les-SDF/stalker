@@ -2,17 +2,23 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Form\UpdateCodeType;
 use App\Form\UpdateType;
 use App\Repository\UserRepository;
 use App\Service\CountryService;
 use App\Service\FlashMessageHelper;
+use App\Service\FlashMessageHelperInterface;
+use App\Service\FormManagerInterface;
 use App\Service\UserManagerInterface;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Random\RandomException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class UserController extends AbstractController
 {
@@ -22,18 +28,18 @@ class UserController extends AbstractController
         return $this->redirectToRoute('homepage');
     }
 
-    #[Route('/users/{profileCode}/update', name: 'update_user', methods: ['GET', 'POST'])]
-    public function updateUser(string                 $profileCode,
-                               UserRepository         $repository,
+    #[IsGranted('ROLE_USER')]
+    #[Route('/account/update', name: 'update_user', methods: ['GET', 'POST'])]
+    public function updateUser(UserRepository         $repository,
                                CountryService         $country,
                                Request                $request,
                                EntityManagerInterface $entityManager,
                                FlashMessageHelper     $flashMessageHelper): Response
     {
-        if (!$user = $repository->findByProfileCode($profileCode)) {
-            $this->addFlash('error', 'User not found');
-            return $this->redirectToRoute('homepage');
-        }
+        /**
+         * @var $user User
+         */
+        $user = $this->getUser();
         $this->denyAccessUnlessGranted("USER_EDIT", $user);
 
         $countries = $country->getCountries();
@@ -49,7 +55,9 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($user);
             $entityManager->flush();
-            return $this->redirectToRoute('user_profile', ['profileCode' => $user->getProfileCode()]);
+            return $this->redirectToRoute('user_profile', [
+                'profileCode' => $user->getProfileCode()
+            ]);
         } else {
             $flashMessageHelper->addFormErrorsAsFlashMessages($form);
         }
@@ -59,15 +67,12 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/users/{profileCode}/delete', name: 'delete_user', options: ['expose' => true], methods: ['DELETE'])]
-    public function deleteUser(string                 $profileCode,
-                               UserRepository         $repository,
+    #[IsGranted('ROLE_USER')]
+    #[Route('/account/delete', name: 'delete_user', options: ['expose' => true], methods: ['DELETE'])]
+    public function deleteUser(UserRepository         $repository,
                                EntityManagerInterface $entityManager): Response
     {
-        if (!$user = $repository->findByProfileCode($profileCode)) {
-            $this->addFlash('error', 'User not found');
-            return $this->redirectToRoute('homepage');
-        }
+        $user = $this->getUser();
         $this->denyAccessUnlessGranted("USER_DELETE", $user);
         $entityManager->remove($user);
         $entityManager->flush();
@@ -76,17 +81,30 @@ class UserController extends AbstractController
         return $this->redirectToRoute('homepage');
     }
 
-    #[Route('/users/{profileCode}/update-profile-code', name: 'update_profile_code', options: ['expose' => true], methods: ['POST'])]
-    public function updateProfileCode(string         $profileCode,
-                                      UserRepository $repository): Response
+    #[IsGranted('ROLE_USER')]
+    #[Route('/account/update-profile-code', name: 'update_profile_code', options: ['expose' => true], methods: ['POST'])]
+    public function updateProfileCode(EntityManagerInterface      $entityManager,
+                                      Request                     $request,
+                                      FlashMessageHelperInterface $flashMessageHelper): Response
     {
-        if (!$user = $repository->findByProfileCode($profileCode)) {
-            $this->addFlash('error', 'User not found');
-            return $this->redirectToRoute('homepage');
-        }
+        /**
+         * @var User $user
+         */
+        $user = $this->getUser();
         $this->denyAccessUnlessGranted("USER_EDIT", $user);
 
-        // TODO: Récuperer l'utilisateur et lui donner le nouveau code
+        $form = $this->createForm(UpdateCodeType::class, $user);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($user);
+            $entityManager->flush();
+            $this->addFlash('success', 'Profile code updated successfully');
+            return $this->redirectToRoute('user_profile', [
+                'profileCode' => $user->getProfileCode()
+            ]);
+        } else {
+            $flashMessageHelper->addFormErrorsAsFlashMessages($form);
+        }
 
         return $this->redirectToRoute('user_profile', [
             'profileCode' => $user->getProfileCode()
@@ -104,18 +122,20 @@ class UserController extends AbstractController
         ]);
     }
 
+
     /**
      * @throws RandomException
      */
+    #[IsGranted('ROLE_USER')]
     #[Route('/users/{profileCode}/reset-profile-code', name: 'reset_profile_code', options: ['expose' => true], methods: ['POST'])]
     public function resetDefaultProfileCode(string               $profileCode,
                                             UserRepository       $repository,
                                             UserManagerInterface $userManager): Response
     {
-        if (!$user = $repository->findByProfileCode($profileCode)) {
-            $this->addFlash('error', 'User not found');
-            return $this->redirectToRoute('homepage');
-        }
+        /**
+         * @var User $user
+         */
+        $user = $this->getUser();
         $this->denyAccessUnlessGranted("USER_EDIT", $user);
         $userManager->generateProfileCode($user);
 
