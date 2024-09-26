@@ -32,5 +32,21 @@ class CountryService implements CountryServiceInterface
 
         return $countriesList;
     }
+    public function getCountryName(string $countryCode): string
+    {
+        try {
+            $response = $this->client->request('GET', "https://restcountries.com/v3.1/alpha/$countryCode");
+            $countries = $response->toArray();
+
+            if (isset($countries[0]['name']['common'])) {
+                return $countries[0]['name']['common'];
+            }
+
+            return 'N/A';
+        } catch (\Exception $e) {
+            return 'Error retrieving country';
+        }
+    }
+
 
 }

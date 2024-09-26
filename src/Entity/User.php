@@ -143,6 +143,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user_public'])]
     private ?string $lastname = null;
 
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -385,4 +387,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+
+
 }

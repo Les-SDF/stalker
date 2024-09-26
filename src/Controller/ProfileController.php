@@ -8,6 +8,8 @@ use App\Form\SignUpType;
 use App\Form\UpdateType;
 use App\Form\UpdateCodeType;
 use App\Repository\UserRepository;
+use App\Service\CountryService;
+use App\Service\CountryServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +24,8 @@ class ProfileController extends AbstractController
     public function userProfile(string                         $profileCode,
                                 Request                        $request,
                                 EntityManagerInterface         $entityManager,
-                                UserRepository                 $repository): Response
+                                UserRepository                 $repository,
+                                CountryServiceInterface $countryService): Response
     {
         if (!$user = $repository->findByProfileCode($profileCode)) {
             $this->addFlash('error', 'User not found');
@@ -53,6 +56,7 @@ class ProfileController extends AbstractController
             'signUpForm' => $signUpForm,
             'updateCodeForm' => $updateCodeForm,
             'updateForm' => $updateForm,
+            'country' => $countryService->getCountryName($user->getCountryCode()),
             'user' => $user
         ]);
     }

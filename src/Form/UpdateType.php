@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
@@ -37,6 +38,22 @@ class UpdateType extends AbstractType
                     new NotBlank(),
                     new NotNull(),
                     new Email(['message' => 'Please enter a valid email address']),
+                ]
+            ])
+            ->add('firstname', TextType::class, [
+                'label' => 'Firstname',
+                'mapped' => true,
+                'constraints' => [
+                    new NotBlank(),
+                    new NotNull(),
+                ]
+            ])
+            ->add('lastname', TextType::class, [
+                'label' => 'Lastname',
+                'mapped' => true,
+                'constraints' => [
+                    new NotBlank(),
+                    new NotNull(),
                 ]
             ])
             ->add('password', PasswordType::class,[

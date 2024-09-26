@@ -12,6 +12,14 @@
                 {{ form_label(form.email, 'Email', {'label_attr': {'class': 'text-font-900 mb-2 mt-2 block text-sm font-medium'}}) }}
                 {{ form_widget(form.email, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
             </div>
+            <div>
+                {{ form_label(form.firstname, 'Firstname', {'label_attr': {'class': 'text-font-900 mb-2 mt-2 block text-sm font-medium'}}) }}
+                {{ form_widget(form.firstname, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
+            </div>
+            <div>
+                {{ form_label(form.lastname, 'Lastname', {'label_attr': {'class': 'text-font-900 mb-2 mt-2 block text-sm font-medium'}}) }}
+                {{ form_widget(form.lastname, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
+            </div>
 
             <div>
                 {{ form_label(form.phoneNumber, 'Tél', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}
