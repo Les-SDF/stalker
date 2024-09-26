@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ user.firstname }} {{ user.lastname }}{% endblock %}
-
 {% block body %}
     {% include "user/modals/profile-code.html.twig" %}
     {% include "user/modals/delete.twig" with {'user': user}%}
@@ -46,7 +45,18 @@
             <div class="flex-col flex space-y-2">
                 <p class=""><strong>Google :</strong> {{ user.adresse.rue |default('N/A') }}</p>
                 <p class=""><strong>Facebook :</strong> {{ user.adresse.ville|default('N/A') }}</p>
-                <p class=""><strong>Steam :</strong> {{ user.adresse.codePostal|default('N/A') }}</p>
+                <p class=""><strong>Steam :</strong>
+                    {% if null is null %}
+                <div class="mt-4">
+                    <a href="{{ path('steam_connect') }}">
+                        <img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_large_noborder.png"
+                             alt="Sign in with Steam" class="w-48 h-auto transition-all duration-500 hover:scale-110">
+                    </a>
+                </div>
+                {% else %}
+                    {{ user.adresse.ville|default('N/A') }}
+                {% endif %}
+                </p>
             </div>
         </div>
 
