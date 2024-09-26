@@ -22,10 +22,9 @@
                      class="w-full h-full object-cover rounded-full" height="50px" width="50px">
             </div>
             <div class="ml-4 flex flex-col space-y-2">
-                <h2 class="text-xl font-semibold">{{ user.prenom|default('Prenom') }} {{ user.nom|default('Nom') }}</h2>
-                <p class=""><strong>Email :</strong> {{ user.email }}</p>
-                <p class=""><strong>Date d'inscription :</strong> {{ user.dateInscription|default('Date Inconnue') }}
-                <p class=""><strong>Genre :</strong> {{ 'Non spécifié' }}</p>
+                <h2 class="text-xl font-semibold">{{ user.firstname|default('N/A') }} {{ user.lastname|default('N/A') }}</h2>
+                <p class=""><strong>Date d'inscription :</strong> {{ user.createdAt|date('d F Y')|default('Date Inconnue') }}
+                <p class=""><strong>Genre :</strong> {{ user.gender.value|default('N/A') }}</p>
                 <img src="https://flagsapi.com/{{ user.countryCode|default('US') }}/shiny/64.png" alt="{{ user.countryCode }}"
                      class="absolute top-4 right-4 w-8 h-8" />
             </div>
@@ -35,25 +34,27 @@
         <div class="bg-white shadow-md rounded-lg p-4 border-2 border-gray-50 mb-6">
             <h3 class="text-lg font-semibold mb-2">Adresse Principale</h3>
             <div class="flex-col flex space-y-2">
-                <p class=""><strong>Rue :</strong> {{ user.adresse.rue |default('Rue') }}</p>
-                <p class=""><strong>Ville :</strong> {{ user.adresse.ville|default('Ville') }}</p>
-                <p class=""><strong>Code postal :</strong> {{ user.adresse.codePostal|default('Code Postale') }}</p>
+                <p class=""><strong>Pays :</strong> {{ country|default('N/A') }}</p>
+                <p class=""><strong>Rue :</strong> {{ user.adresse.rue |default('N/A') }}</p>
+                <p class=""><strong>Ville :</strong> {{ user.adresse.ville|default('N/A') }}</p>
+                <p class=""><strong>Code postal :</strong> {{ user.adresse.codePostal|default('N/A') }}</p>
             </div>
         </div>
 
         <div class="bg-white shadow-md rounded-lg p-4 border-2 border-gray-50 mb-6">
             <h3 class="text-lg font-semibold mb-2">Réseaux Sociaux</h3>
             <div class="flex-col flex space-y-2">
-                <p class=""><strong>Google :</strong> {{ user.adresse.rue |default('test') }}</p>
-                <p class=""><strong>Facebook :</strong> {{ user.adresse.ville|default('test') }}</p>
-                <p class=""><strong>Steam :</strong> {{ user.adresse.codePostal|default('test') }}</p>
+                <p class=""><strong>Google :</strong> {{ user.adresse.rue |default('N/A') }}</p>
+                <p class=""><strong>Facebook :</strong> {{ user.adresse.ville|default('N/A') }}</p>
+                <p class=""><strong>Steam :</strong> {{ user.adresse.codePostal|default('N/A') }}</p>
             </div>
         </div>
 
         <div class="bg-white shadow-md rounded-lg p-4 border-2 border-gray-50 mb-6">
             <h3 class="text-lg font-semibold mb-2">Contact</h3>
             <div class="flex-col flex space-y-2">
-                <p class=""><strong>Telephone :</strong> {{ user.phoneNumber |default('Numero tel') }}</p>
+                <p class=""><strong>Telephone :</strong> {{ user.phoneNumber |default('N/A') }}</p>
+                <p class=""><strong>Email :</strong> {{ user.email |default('N/A') }}</p>
             </div>
         </div>
 
