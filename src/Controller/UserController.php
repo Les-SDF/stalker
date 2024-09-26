@@ -5,13 +5,10 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UpdateCodeType;
 use App\Form\UpdateType;
-use App\Repository\UserRepository;
 use App\Service\CountryService;
 use App\Service\FlashMessageHelper;
 use App\Service\FlashMessageHelperInterface;
-use App\Service\FormManagerInterface;
 use App\Service\UserManagerInterface;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Random\RandomException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,8 +27,7 @@ class UserController extends AbstractController
 
     #[IsGranted('ROLE_USER')]
     #[Route('/account/update', name: 'update_user', methods: ['GET', 'POST'])]
-    public function updateUser(UserRepository         $repository,
-                               CountryService         $country,
+    public function updateUser(CountryService         $country,
                                Request                $request,
                                EntityManagerInterface $entityManager,
                                FlashMessageHelper     $flashMessageHelper): Response
@@ -69,8 +65,7 @@ class UserController extends AbstractController
 
     #[IsGranted('ROLE_USER')]
     #[Route('/account/delete', name: 'delete_user', options: ['expose' => true], methods: ['DELETE'])]
-    public function deleteUser(UserRepository         $repository,
-                               EntityManagerInterface $entityManager): Response
+    public function deleteUser(EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
         $this->denyAccessUnlessGranted("USER_DELETE", $user);
@@ -122,15 +117,12 @@ class UserController extends AbstractController
         ]);
     }
 
-
     /**
      * @throws RandomException
      */
     #[IsGranted('ROLE_USER')]
     #[Route('/users/{profileCode}/reset-profile-code', name: 'reset_profile_code', options: ['expose' => true], methods: ['POST'])]
-    public function resetDefaultProfileCode(string               $profileCode,
-                                            UserRepository       $repository,
-                                            UserManagerInterface $userManager): Response
+    public function resetDefaultProfileCode(UserManagerInterface $userManager): Response
     {
         /**
          * @var User $user

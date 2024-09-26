@@ -1,9 +1,6 @@
 <?php
 
-// src/Controller/SteamController.php
-
 namespace App\Controller;
-
 
 use App\Security\SteamProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,16 +10,27 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class SteamController extends AbstractController
 {
     #[Route('/steam/connect', name: 'steam_connect')]
-    public function connect(SteamProvider $steamClient)
+    public function connect(SteamProvider $steamClient): RedirectResponse
     {
         return $steamClient->redirect();
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     */
     #[Route('/steam/check', name: 'steam_check')]
     public function check(#[Autowire('%steam_api%')]
                           string $steamApi,
@@ -34,13 +42,10 @@ class SteamController extends AbstractController
             $claimedId = $requestParams['openid_claimed_id'];
             $steamId = basename($claimedId);
 
-
-            $url = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={$steamApi}&steamids={$steamId}";
-
+            $url = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=$steamApi&steamids=$steamId";
 
             $httpClient = HttpClient::create();
             $response = $httpClient->request('GET', $url);
-
 
             if ($response->getStatusCode() === 200) {
                 $data = $response->toArray();
@@ -48,7 +53,6 @@ class SteamController extends AbstractController
                 $playerInfo = $data['response']['players'][0];
                 return new JsonResponse($playerInfo);
             }
-
 
             return $this->redirectToRoute('homepage');
         }
