@@ -7,6 +7,8 @@ use App\Enum\Sexuality;
 use App\Enum\Visibility;
 use App\Repository\UserRepository;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
@@ -142,6 +144,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['user_public'])]
     private ?string $lastname = null;
+
+    /**
+     * @var Collection<int, UserSocialMedia>
+     */
+    #[ORM\OneToMany(targetEntity: UserSocialMedia::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $userSocialMedia;
+
+    public function __construct()
+    {
+        $this->userSocialMedia = new ArrayCollection();
+    }
 
 
 
@@ -384,6 +397,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLogin(string $login): static
     {
         $this->login = $login;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserSocialMedia>
+     */
+    public function getUserSocialMedia(): Collection
+    {
+        return $this->userSocialMedia;
+    }
+
+    public function addUserSocialMedium(UserSocialMedia $userSocialMedium): static
+    {
+        if (!$this->userSocialMedia->contains($userSocialMedium)) {
+            $this->userSocialMedia->add($userSocialMedium);
+            $userSocialMedium->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserSocialMedium(UserSocialMedia $userSocialMedium): static
+    {
+        if ($this->userSocialMedia->removeElement($userSocialMedium)) {
+            // set the owning side to null (unless already changed)
+            if ($userSocialMedium->getUser() === $this) {
+                $userSocialMedium->setUser(null);
+            }
+        }
 
         return $this;
     }
