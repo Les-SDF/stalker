@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\UserSocialMedia;
 use App\Repository\SocialMediaRepository;
 use App\Security\SteamProvider;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpClient\HttpClient;
@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -46,6 +45,9 @@ class SteamController extends AbstractController
                           EntityManagerInterface $entityManager,
                           SocialMediaRepository $mediaRepository): RedirectResponse|JsonResponse
     {
+        /**
+         * @var User $user
+         */
         $requestParams = $request->query->all();
 
         if (isset($requestParams['openid_claimed_id'])) {
