@@ -66,11 +66,13 @@ class ProfileController extends AbstractController
             return new JsonResponse(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
         }
 
-        return new JsonResponse(
-            $serializer->serialize($user, 'json'),
-            Response::HTTP_OK,
-            [],
-            true
+
+        $data = $serializer->serialize(
+            $user,
+            'json',
+            ['groups' => ['user_public']]
         );
+
+        return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 }

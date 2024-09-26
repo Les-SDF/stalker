@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -41,6 +42,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     #[Assert\NotBlank]
     #[Assert\NotNull]
+    #[Groups(['user_public'])]
     private ?string $login = null;
 
     #[ORM\Column(length: 254)]
@@ -49,6 +51,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     #[Assert\NotBlank]
     #[Assert\NotNull]
+    #[Groups(['user_public'])]
     private ?string $email = null;
 
     /**
@@ -76,12 +79,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(nullable: true, enumType: Gender::class)]
+    #[Groups(['user_public'])]
     private ?Gender $gender = null;
 
     #[ORM\Column(nullable: true, enumType: Sexuality::class)]
+    #[Groups(['user_public'])]
     private ?Sexuality $sexuality = null;
 
     #[ORM\Column(enumType: Visibility::class)]
+    #[Groups(['user_public'])]
     private ?Visibility $visibility = null;
 
     #[ORM\Column(length: 255)]
@@ -95,36 +101,46 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         pattern: "/^[a-zA-Z0-9]+$/",
         message: "The profile code must contain only letters and digits"
     )]
+    #[Groups(['user_public'])]
     private ?string $profileCode = null;
 
     #[ORM\Column]
+    #[Groups(['user_public'])]
     private ?DateTimeImmutable $connectedAt = null;
 
     #[ORM\Column]
+    #[Groups(['user_public'])]
     private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['user_public'])]
     private ?DateTimeImmutable $editedAt = null;
 
     #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(['user_public'])]
     private ?string $phoneNumber = null;
 
     /**
      * ISO 3166-1 alpha-2 country code
      */
     #[ORM\Column(length: 2, nullable: true)]
+    #[Groups(['user_public'])]
     private ?string $countryCode = null;
 
     #[ORM\Column(length: 32, nullable: true)]
+    #[Groups(['user_public'])]
     private ?string $pronouns = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user_public'])]
     private ?string $aboutMe = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user_public'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user_public'])]
     private ?string $lastname = null;
 
     public function getId(): ?int
