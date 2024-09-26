@@ -2,14 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Enum\Visibility;
 use App\Form\SignUpType;
 use App\Service\FlashMessageHelperInterface;
+use App\Service\FormManagerInterface;
 use App\Service\UserManagerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -18,8 +17,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class AuthenticationController extends AbstractController
 {
     #[Route('/sign-up', name: 'sign_up', methods: ['POST'])]
-    public function signUp(#[Autowire('%strict_validation%')]
-                           bool                        $strictValidation,
+    public function signUp(FormManagerInterface        $formManager,
                            Request                     $request,
                            UserManagerInterface        $userManager,
                            EntityManagerInterface      $entityManager,
@@ -29,14 +27,15 @@ class AuthenticationController extends AbstractController
             $this->addFlash("warning", "You are already signed in.");
             return $this->redirectToRoute('homepage');
         }
-        $user = new User();
-        $form = $this->createForm(SignUpType::class, $user, [
-            'validation_groups' => $strictValidation
-                ? ['Default', 'strict_validation']
-                : ['Default']
-        ]);
+
+        $form = $formManager->createForm(
+            type: SignUpType::class,
+            route: 'sign_up'
+        );
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $user = $form->getData();
             $userManager->hashPassword(
                 user: $user,
                 password: $form->get('password')->getData()
@@ -49,20 +48,15 @@ class AuthenticationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
             $this->addFlash('success', 'You are signed up.');
-//        $currentRoute = $request->attributes->get('_route');
-            return $this->redirectToRoute('homepage');
+            return $this->redirectToRoute(
+                $request->attributes->get('_route')
+            );
         } else {
             $flashMessageHelper->addFormErrorsAsFlashMessages($form);
-            $showSignUpModal = true;
         }
-        // on doit récupérer la route depuis laquelle cette méthode a été appelée,
-        // pour y rediriger l'utilisateur après l'inscription,
-        // et en cas d'erreur, faire afficher le formulaire automatiquement
-//        $currentRoute = $request->attributes->get('_route');
-        return $this->redirectToRoute('homepage', [
-            'form' => $form,
-            //'showSignUpModal' => $showSignUpModal ?? false,
-        ]);
+
+        // TODO: Faire en sorte que le formulaire soit reaffiché automatiquement en cas d'erreur
+        return $this->redirectToRoute('homepage');
     }
 
     #[Route('/sign-in', name: 'sign_in', methods: ['GET', 'POST'])]
@@ -72,9 +66,6 @@ class AuthenticationController extends AbstractController
             $this->addFlash("warning", "You are already signed in.");
             return $this->redirectToRoute("homepage");
         }
-        // on doit récupérer la route depuis laquelle cette méthode a été appelée,
-        // pour y rediriger l'utilisateur après l'inscription,
-        // et en cas d'erreur, faire afficher le formulaire automatiquement
         return $this->redirectToRoute("homepage", [
             "email" => $authenticationUtils->getLastUsername(),
         ]);

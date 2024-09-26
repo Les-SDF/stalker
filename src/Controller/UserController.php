@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Form\SignInType;
-use App\Form\SignUpType;
 use App\Form\UpdateType;
 use App\Repository\UserRepository;
 use App\Service\CountryService;
@@ -24,51 +22,41 @@ class UserController extends AbstractController
         return $this->redirectToRoute('homepage');
     }
 
-    // TODO: Passer cette route en POST seulement, elle ne fera plus que valider les données et redirigera vers user_profile
     #[Route('/users/{profileCode}/update', name: 'update_user', methods: ['GET', 'POST'])]
-    public function updateUser(string         $profileCode,
-                               UserRepository $repository,
-                               CountryService $country,
-                               Request $request,
+    public function updateUser(string                 $profileCode,
+                               UserRepository         $repository,
+                               CountryService         $country,
+                               Request                $request,
                                EntityManagerInterface $entityManager,
-                               FlashMessageHelper $flashMessageHelper): Response
+                               FlashMessageHelper     $flashMessageHelper): Response
     {
-        $countriesList = $country->getCountries();
-
         if (!$user = $repository->findByProfileCode($profileCode)) {
             $this->addFlash('error', 'User not found');
             return $this->redirectToRoute('homepage');
         }
         $this->denyAccessUnlessGranted("USER_EDIT", $user);
-        $signInForm = $this->createForm(SignInType::class, $user, [
-            'method' => 'POST',
-            'action' => $this->generateUrl('sign_in')
-        ]);
-        $signUpForm = $this->createForm(SignUpType::class, $user, [
-            'method' => 'POST',
-            'action' => $this->generateUrl('sign_up')
-        ]);
-        $update = $this->createForm(UpdateType::class, $user, [
+
+        $countries = $country->getCountries();
+        $form = $this->createForm(UpdateType::class, $user, [
             'method' => 'POST',
             'action' => $this->generateUrl('update_user', [
                 'profileCode' => $user->getProfileCode()
             ]),
-            'countries' => $countriesList,
+            'countries' => $countries,
         ]);
-        $update->handleRequest($request);
-        if($update->isSubmitted() && $update->isValid()) {
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($user);
             $entityManager->flush();
             return $this->redirectToRoute('user_profile', ['profileCode' => $user->getProfileCode()]);
         } else {
-            $flashMessageHelper->addFormErrorsAsFlashMessages($update);
-            return $this->render('user/profile-update.html.twig', [
-                'signInForm' => $signInForm,
-                'signUpForm' => $signUpForm,
-                'form' => $update,
-                'country_codes' => $countriesList
-            ]);
+            $flashMessageHelper->addFormErrorsAsFlashMessages($form);
         }
+        return $this->render('user/profile-update.html.twig', [
+            'form' => $form,
+            'country_codes' => $countries
+        ]);
     }
 
     #[Route('/users/{profileCode}/delete', name: 'delete_user', options: ['expose' => true], methods: ['DELETE'])]
@@ -86,6 +74,23 @@ class UserController extends AbstractController
 
         $this->addFlash('success', 'User deleted successfully');
         return $this->redirectToRoute('homepage');
+    }
+
+    #[Route('/users/{profileCode}/update-profile-code', name: 'update_profile_code', options: ['expose' => true], methods: ['POST'])]
+    public function updateProfileCode(string         $profileCode,
+                                      UserRepository $repository): Response
+    {
+        if (!$user = $repository->findByProfileCode($profileCode)) {
+            $this->addFlash('error', 'User not found');
+            return $this->redirectToRoute('homepage');
+        }
+        $this->denyAccessUnlessGranted("USER_EDIT", $user);
+
+        // TODO: Récuperer l'utilisateur et lui donner le nouveau code
+
+        return $this->redirectToRoute('user_profile', [
+            'profileCode' => $user->getProfileCode()
+        ]);
     }
 
     #[Route('/users/check-profile-code-availability', name: 'check_profile_code_availability', options: ['expose' => true], methods: ['POST'])]
