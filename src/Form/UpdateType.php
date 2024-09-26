@@ -118,6 +118,7 @@ class UpdateType extends AbstractType
             [
                 'label' => 'Phone number',
                 'mapped' => true,
+                'required' => false,
             ])
         ;
     }

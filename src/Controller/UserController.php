@@ -2,19 +2,23 @@
 
 namespace App\Controller;
 
-use App\Form\SignInType;
-use App\Form\SignUpType;
+use App\Entity\User;
+use App\Form\UpdateCodeType;
 use App\Form\UpdateType;
 use App\Repository\UserRepository;
 use App\Service\CountryService;
 use App\Service\FlashMessageHelper;
+use App\Service\FlashMessageHelperInterface;
+use App\Service\FormManagerInterface;
 use App\Service\UserManagerInterface;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Random\RandomException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class UserController extends AbstractController
 {
@@ -24,68 +28,87 @@ class UserController extends AbstractController
         return $this->redirectToRoute('homepage');
     }
 
-    // TODO: Passer cette route en POST seulement, elle ne fera plus que valider les données et redirigera vers user_profile
-    #[Route('/users/{profileCode}/update', name: 'update_user', methods: ['GET', 'POST'])]
-    public function updateUser(string         $profileCode,
-                               UserRepository $repository,
-                               CountryService $country,
-                               Request $request,
+    #[IsGranted('ROLE_USER')]
+    #[Route('/account/update', name: 'update_user', methods: ['GET', 'POST'])]
+    public function updateUser(UserRepository         $repository,
+                               CountryService         $country,
+                               Request                $request,
                                EntityManagerInterface $entityManager,
-                               FlashMessageHelper $flashMessageHelper): Response
+                               FlashMessageHelper     $flashMessageHelper): Response
     {
-        $countriesList = $country->getCountries();
-
-        if (!$user = $repository->findByProfileCode($profileCode)) {
-            $this->addFlash('error', 'User not found');
-            return $this->redirectToRoute('homepage');
-        }
+        /**
+         * @var $user User
+         */
+        $user = $this->getUser();
         $this->denyAccessUnlessGranted("USER_EDIT", $user);
-        $signInForm = $this->createForm(SignInType::class, $user, [
-            'method' => 'POST',
-            'action' => $this->generateUrl('sign_in')
-        ]);
-        $signUpForm = $this->createForm(SignUpType::class, $user, [
-            'method' => 'POST',
-            'action' => $this->generateUrl('sign_up')
-        ]);
-        $update = $this->createForm(UpdateType::class, $user, [
+
+        $countries = $country->getCountries();
+        $form = $this->createForm(UpdateType::class, $user, [
             'method' => 'POST',
             'action' => $this->generateUrl('update_user', [
                 'profileCode' => $user->getProfileCode()
             ]),
-            'countries' => $countriesList,
+            'countries' => $countries,
         ]);
-        $update->handleRequest($request);
-        if($update->isSubmitted() && $update->isValid()) {
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($user);
             $entityManager->flush();
-            return $this->redirectToRoute('user_profile', ['profileCode' => $user->getProfileCode()]);
-        } else {
-            $flashMessageHelper->addFormErrorsAsFlashMessages($update);
-            return $this->render('user/profile-update.html.twig', [
-                'signInForm' => $signInForm,
-                'signUpForm' => $signUpForm,
-                'form' => $update,
-                'country_codes' => $countriesList
+            return $this->redirectToRoute('user_profile', [
+                'profileCode' => $user->getProfileCode()
             ]);
+        } else {
+            $flashMessageHelper->addFormErrorsAsFlashMessages($form);
         }
+        return $this->render('user/profile-update.html.twig', [
+            'form' => $form,
+            'country_codes' => $countries
+        ]);
     }
 
-    #[Route('/users/{profileCode}/delete', name: 'delete_user', options: ['expose' => true], methods: ['DELETE'])]
-    public function deleteUser(string                 $profileCode,
-                               UserRepository         $repository,
+    #[IsGranted('ROLE_USER')]
+    #[Route('/account/delete', name: 'delete_user', options: ['expose' => true], methods: ['DELETE'])]
+    public function deleteUser(UserRepository         $repository,
                                EntityManagerInterface $entityManager): Response
     {
-        if (!$user = $repository->findByProfileCode($profileCode)) {
-            $this->addFlash('error', 'User not found');
-            return $this->redirectToRoute('homepage');
-        }
+        $user = $this->getUser();
         $this->denyAccessUnlessGranted("USER_DELETE", $user);
         $entityManager->remove($user);
         $entityManager->flush();
 
         $this->addFlash('success', 'User deleted successfully');
         return $this->redirectToRoute('homepage');
+    }
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('/account/update-profile-code', name: 'update_profile_code', options: ['expose' => true], methods: ['POST'])]
+    public function updateProfileCode(EntityManagerInterface      $entityManager,
+                                      Request                     $request,
+                                      FlashMessageHelperInterface $flashMessageHelper): Response
+    {
+        /**
+         * @var User $user
+         */
+        $user = $this->getUser();
+        $this->denyAccessUnlessGranted("USER_EDIT", $user);
+
+        $form = $this->createForm(UpdateCodeType::class, $user);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($user);
+            $entityManager->flush();
+            $this->addFlash('success', 'Profile code updated successfully');
+            return $this->redirectToRoute('user_profile', [
+                'profileCode' => $user->getProfileCode()
+            ]);
+        } else {
+            $flashMessageHelper->addFormErrorsAsFlashMessages($form);
+        }
+
+        return $this->redirectToRoute('user_profile', [
+            'profileCode' => $user->getProfileCode()
+        ]);
     }
 
     #[Route('/users/check-profile-code-availability', name: 'check_profile_code_availability', options: ['expose' => true], methods: ['POST'])]
@@ -99,18 +122,20 @@ class UserController extends AbstractController
         ]);
     }
 
+
     /**
      * @throws RandomException
      */
+    #[IsGranted('ROLE_USER')]
     #[Route('/users/{profileCode}/reset-profile-code', name: 'reset_profile_code', options: ['expose' => true], methods: ['POST'])]
     public function resetDefaultProfileCode(string               $profileCode,
                                             UserRepository       $repository,
                                             UserManagerInterface $userManager): Response
     {
-        if (!$user = $repository->findByProfileCode($profileCode)) {
-            $this->addFlash('error', 'User not found');
-            return $this->redirectToRoute('homepage');
-        }
+        /**
+         * @var User $user
+         */
+        $user = $this->getUser();
         $this->denyAccessUnlessGranted("USER_EDIT", $user);
         $userManager->generateProfileCode($user);
 

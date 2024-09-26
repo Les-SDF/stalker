@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-// TODO: Faire indiquer le login à la place de l'id de l'utilisateur
+
 #[AsCommand(
     name: 'promote:admin',
     description: 'Promote a user to admin',
@@ -29,31 +29,31 @@ class PromoteAdminCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument("user_id", InputArgument::REQUIRED, "User ID")
+            ->addArgument("user_login", InputArgument::REQUIRED, "User Login")
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $user_id = $input->getArgument("user_id");
+        $user_login = $input->getArgument("user_login");
 
         /**
          * @var User $user
          */
-        $user = $this->repository->find($user_id);
+        $user = $this->repository->findOneBy(['login' => $user_login]);
         if (!$user) {
-            $io->error(sprintf("User %s not found", $user_id));
+            $io->error(sprintf("User %s not found", $user_login));
             return Command::INVALID;
         }
         if (in_array("ROLE_ADMIN", $user->getRoles())) {
-            $io->error(sprintf("User %s is already admin", $user->getEmail()));
+            $io->error(sprintf("User %s is already admin", $user->getLogin()));
             return Command::INVALID;
         }
-        $user->addRoles("ROLE_ADMIN");
+        $user->addRole("ROLE_ADMIN");
         $this->entityManager->persist($user);
         $this->entityManager->flush();
-        $io->success(sprintf("User %s is now admin", $user->getEmail()));
+        $io->success(sprintf("User %s is now admin", $user->getLogin()));
         return Command::SUCCESS;
     }
 }

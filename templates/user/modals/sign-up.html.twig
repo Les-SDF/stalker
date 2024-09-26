@@ -1,3 +1,5 @@
+{% set form = signUpForm() %}
+
 <div id="sign-up-modal" tabindex="-1" aria-hidden="true"
      class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative w-full max-w-md max-h-full">
@@ -11,14 +13,14 @@
             </button>
             <div class="px-6 py-6 lg:px-8">
                 <h3 class="mb-4 text-xl font-medium text-font-900 dark:text-white">Welcome to Stalker</h3>
-                {{ form_start(signUpForm, {"attr": {"class": "space-y-6"}}) }}
+                {{ form_start(form, {"attr": {"class": "space-y-6"}}) }}
                 <div>
-                    {{ form_label(signUpForm.login, "Your login", {
+                    {{ form_label(form.login, "Your login", {
                         "label_attr": {
                             "class": "block mb-2 text-sm font-medium text-font-900 dark:text-white"
                         }
                     }) }}
-                    {{ form_widget(signUpForm.login, {
+                    {{ form_widget(form.login, {
                         "attr": {
                             "class": "bg-gray-50 border border-gray-300 text-font-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                         }
@@ -26,12 +28,12 @@
                     <p class="mt-2 text-font-900 text-sm dark:text-white">Must contain only lowercase letters and digits</p>
                 </div>
                 <div>
-                    {{ form_label(signUpForm.email, "Your email", {
+                    {{ form_label(form.email, "Your email", {
                         "label_attr": {
                             "class": "block mb-2 text-sm font-medium text-font-900 dark:text-white"
                         }
                     }) }}
-                    {{ form_widget(signUpForm.email, {
+                    {{ form_widget(form.email, {
                         "attr": {
                             "class": "bg-gray-50 border border-gray-300 text-font-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white",
                             "placeholder": "johndoe@company.com"
@@ -39,12 +41,12 @@
                     }) }}
                 </div>
                 <div>
-                    {{ form_label(signUpForm.password.first, "Your password", {
+                    {{ form_label(form.password.first, "Your password", {
                         "label_attr": {
                             "class": "block mb-2 text-sm font-medium text-font-900 dark:text-white"
                         }
                     }) }}
-                    {{ form_widget(signUpForm.password.first, {
+                    {{ form_widget(form.password.first, {
                         "attr": {
                             "class": "bg-gray-50 border border-gray-300 text-font-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white",
                             "placeholder": "••••••••"
@@ -54,12 +56,12 @@
                         1 uppercase letter, 1 lowercase letter, and 1 digit</p>
                 </div>
                 <div>
-                    {{ form_label(signUpForm.password.second, "Repeat your password", {
+                    {{ form_label(form.password.second, "Repeat your password", {
                         "label_attr": {
                             "class": "block mb-2 text-sm font-medium text-font-900 dark:text-white"
                         }
                     }) }}
-                    {{ form_widget(signUpForm.password.second, {
+                    {{ form_widget(form.password.second, {
                         "attr": {
                             "class": "bg-gray-50 border border-gray-300 text-font-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white",
                             "placeholder": "••••••••"
@@ -69,20 +71,20 @@
                 <div class="flex justify-between">
                     <div class="flex items-start">
                         <div class="flex items-center h-5">
-                            {{ form_widget(signUpForm.visibility, {
+                            {{ form_widget(form.visibility, {
                                 "attr": {
                                     "class": "w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-600 dark:border-gray-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
                                 }
                             }) }}
                         </div>
-                        {{ form_label(signUpForm.visibility, "Make my profile private", {
+                        {{ form_label(form.visibility, "Make my profile private", {
                             "label_attr": {
                                 "class": "ml-2 text-sm font-medium text-font-900 dark:text-font-300"
                             }
                         }) }}
                     </div>
                 </div>
-                {{ form_widget(signUpForm.submit, {
+                {{ form_widget(form.submit, {
                     "label": "Create your account",
                     "attr": {
                         "class": "w-full text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
@@ -96,8 +98,8 @@
                         Sign in
                     </button>
                 </div>
-                {{ form_rest(signUpForm) }}
-                {{ form_end(signUpForm) }}
+                {{ form_rest(form) }}
+                {{ form_end(form) }}
             </div>
         </div>
     </div>

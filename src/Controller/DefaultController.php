@@ -27,21 +27,8 @@ class DefaultController extends AbstractController
             10
         );
 
-        // TODO: Généraliser la création des formulaires de connexion et d'inscription
-        $userNew = new User();
-        $signInForm = $this->createForm(SignInType::class, $userNew, [
-            'method' => 'POST',
-            'action' => $this->generateUrl('sign_in')
-        ]);
-        $signUpForm = $this->createForm(SignUpType::class, $userNew, [
-            'method' => 'POST',
-            'action' => $this->generateUrl('sign_up')
-        ]);
-
         return $this->render('user/users-list.html.twig', [
-            'pagination' => $pagination,
-            'signInForm' => $signInForm,
-            'signUpForm' => $signUpForm,
+            'pagination' => $pagination
         ]);
     }
 }

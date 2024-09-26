@@ -14,7 +14,6 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-// TODO: Rendre compatible avec les login comme identifiant d'utilisateur
 #[AsCommand(
     name: 'create:user',
     description: 'Create a new user',
@@ -30,6 +29,7 @@ class CreateUserCommand extends Command
     {
         $this
             ->setDescription('Crée un nouvel utilisateur')
+            ->addArgument('login', InputArgument::REQUIRED, 'Le login de l\'utilisateur')
             ->addArgument('email', InputArgument::REQUIRED, 'L\'email de l\'utilisateur')
             ->addArgument('password', InputArgument::REQUIRED, 'Le mot de passe de l\'utilisateur')
             ->addOption('role', null, InputOption::VALUE_OPTIONAL, 'Le rôle de l\'utilisateur (normal/administrateur)', 'normal');
@@ -38,16 +38,18 @@ class CreateUserCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $login = $input->getArgument('login');
         $email = $input->getArgument('email');
         $password = $input->getArgument('password');
         $role = $input->getOption('role');
 
         // Créer l'utilisateur
         $user = new User();
+        $user->setLogin($login);
         $user->setEmail($email);
         $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
         $user->setPassword($hashedPassword);
-        $user->setRoles([$role === 'administrateur' ? 'ROLE_ADMIN' : 'ROLE_USER']);
+        $user->setRoles($role === 'admin' ? ['ROLE_ADMIN', 'ROLE_USER'] : ['ROLE_USER']);
 
         // Enregistrer l'utilisateur
         $this->entityManager->persist($user);
