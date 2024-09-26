@@ -45,9 +45,13 @@
         <div class="bg-white shadow-md rounded-lg p-4 border-2 border-gray-50 mb-6">
             <h3 class="text-lg font-semibold mb-2">Réseaux Sociaux</h3>
             <div class="flex-col flex space-y-2">
-                <p class=""><strong>Google :</strong> {{ user.adresse.rue |default('N/A') }}</p>
-                <p class=""><strong>Facebook :</strong> {{ user.adresse.ville|default('N/A') }}</p>
-                <p class=""><strong>Steam :</strong>
+
+                {% for social in user.userSocialMedia %}
+
+                <p class=""><strong> {{ social.socialMedia.name }}  : <a href="{{ social.url }}"> {{ social.username }} </a> </strong>
+
+                {% endfor %}
+
                     {% if null is null %}
                 <div class="mt-4">
                     <a href="{{ path('steam_connect') }}">
