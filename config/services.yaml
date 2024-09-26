@@ -10,7 +10,7 @@ parameters:
     geo_api_key: '%env(string:GEO_API_KEY)%'
     strict_validation: '%env(bool:STRICT_VALIDATION)%'
     steam_api: '%env(string:STEAM_API)%'
-    maintenance: true
+    maintenance: false
 
 services:
     # default configuration for services in *this* file

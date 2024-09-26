@@ -21,13 +21,17 @@ final class MaintenanceListener
     #[AsEventListener(event: KernelEvents::REQUEST)]
     public function onKernelRequest(RequestEvent $event): void
     {
+        $request = $event->getRequest();
         if ($this->maintenanceMode) {
-            $request = $event->getRequest();
+
             if ($request->get('_route') !== 'maintenance_page') {
                 $response = new RedirectResponse($this->router->generate('maintenance_page'));
                 $this->flashMessageHelper->addFlashMessage("n'essayer pas d'acceder à la page " . $request->get('_route') . " le site est sous maintenance !!!!!");
                 $event->setResponse($response);
             }
+        }elseif ($request->get('_route') === 'maintenance_page') {
+            $response = new RedirectResponse($this->router->generate('homepage'));
+            $event->setResponse($response);
         }
     }
 }
