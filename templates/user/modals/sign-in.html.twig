@@ -1,3 +1,5 @@
+{% set form = signInForm() %}
+
 <div id="sign-in-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative w-full max-w-md max-h-full">
         <!-- Modal content -->
@@ -8,26 +10,26 @@
             </button>
             <div class="px-6 py-6 lg:px-8">
                 <h3 class="mb-4 text-xl font-medium text-font-900 dark:text-white">Hello again!</h3>
-                {{ form_start(signInForm, {"attr": {"class": "space-y-6"}}) }}
+                {{ form_start(form, {"attr": {"class": "space-y-6"}}) }}
                     <div>
-                        {{ form_label(signInForm.login, "Your login", {
+                        {{ form_label(form.login, "Your login", {
                             "label_attr": {
                                 "class": "block mb-2 text-sm font-medium text-font-900 dark:text-white"
                             }
                         }) }}
-                        {{ form_widget(signInForm.login, {
+                        {{ form_widget(form.login, {
                             "attr": {
                                 "class": "bg-gray-50 border border-gray-300 text-font-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                             }
                         }) }}
                     </div>
                     <div>
-                        {{ form_label(signInForm.password, "Your password", {
+                        {{ form_label(form.password, "Your password", {
                             "label_attr": {
                                 "class": "block mb-2 text-sm font-medium text-font-900 dark:text-white"
                             }
                         }) }}
-                        {{ form_widget(signInForm.password, {
+                        {{ form_widget(form.password, {
                             "attr": {
                                 "class": "bg-gray-50 border border-gray-300 text-font-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white",
                                 "placeholder": "••••••••"
@@ -37,13 +39,13 @@
                     <div class="flex justify-between">
                         <div class="flex items-start">
                             <div class="flex items-center h-5">
-                                {{ form_widget(signInForm.remember, {
+                                {{ form_widget(form.remember, {
                                     "attr": {
                                         "class": "w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-600 dark:border-gray-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
                                     }
                                 }) }}
                             </div>
-                            {{ form_label(signInForm.remember, "Remember me", {
+                            {{ form_label(form.remember, "Remember me", {
                                 "label_attr": {
                                     "class": "ml-2 text-sm font-medium text-font-900 dark:text-font-300"
                                 }
@@ -51,7 +53,7 @@
                         </div>
                         <a href="#" class="text-sm text-primary-700 hover:underline dark:text-primary-500">Forgor password?</a>
                     </div>
-                    {{ form_widget(signInForm.submit, {
+                    {{ form_widget(form.submit, {
                         "label": "Sign in",
                         "attr": {
                             "class": "w-full text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
@@ -64,8 +66,8 @@
                         </button>
                     </div>
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token("authenticate") }}">
-                    {{ form_rest(signInForm) }}
-                {{ form_end(signInForm) }}
+                    {{ form_rest(form) }}
+                {{ form_end(form) }}
             </div>
         </div>
     </div>
