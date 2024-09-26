@@ -5,7 +5,11 @@
 namespace App\Controller;
 
 
+use App\Entity\UserSocialMedia;
+use App\Repository\SocialMediaRepository;
 use App\Security\SteamProvider;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpClient\HttpClient;
@@ -13,20 +17,25 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class SteamController extends AbstractController
 {
+    #[isGranted('ROLE_USER')]
     #[Route('/steam/connect', name: 'steam_connect')]
     public function connect(SteamProvider $steamClient)
     {
         return $steamClient->redirect();
     }
 
+    #[isGranted('ROLE_USER')]
     #[Route('/steam/check', name: 'steam_check')]
     public function check(#[Autowire('%steam_api%')]
                           string $steamApi,
-                          Request $request): RedirectResponse|JsonResponse
+                          Request $request,
+                          EntityManagerInterface $entityManager,
+                          SocialMediaRepository $mediaRepository): RedirectResponse|JsonResponse
     {
         $requestParams = $request->query->all();
 
@@ -46,7 +55,17 @@ class SteamController extends AbstractController
                 $data = $response->toArray();
 
                 $playerInfo = $data['response']['players'][0];
-                return new JsonResponse($playerInfo);
+                $user = $this->getUser();
+                $social = $mediaRepository->findOneBy(['name' => 'steam']);
+                $userSocialMedia = new UserSocialMedia();
+                $userSocialMedia->setSocialMedia($social);
+                $userSocialMedia->setUser($user);
+                $userSocialMedia->setUrl($playerInfo['profileurl']);
+                $userSocialMedia->setUsername($playerInfo['personaname']);
+                $entityManager->persist($userSocialMedia);
+                $entityManager->flush();
+                return $this->redirectToRoute('user_profile',['profileCode' => $user->getProfileCode()]);
+                //return new JsonResponse([$data]);
             }
 
 
