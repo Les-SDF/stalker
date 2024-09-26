@@ -2,9 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Form\SignInType;
-use App\Form\SignUpType;
 use App\Service\QueryBuilderServiceInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,5 +27,10 @@ class DefaultController extends AbstractController
         return $this->render('user/users-list.html.twig', [
             'pagination' => $pagination
         ]);
+    }
+
+    public function maintenancePage(): Response
+    {
+        return $this->render('maintenance.html.twig');
     }
 }
