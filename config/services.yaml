@@ -10,6 +10,7 @@ parameters:
     geo_api_key: '%env(string:GEO_API_KEY)%'
     strict_validation: '%env(bool:STRICT_VALIDATION)%'
     steam_api: '%env(string:STEAM_API)%'
+    maintenance: true
 
 services:
     # default configuration for services in *this* file
@@ -26,6 +27,14 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    # Configuration de l'event listener pour la maintenance
+    App\EventListener\MaintenanceListener:
+        arguments:
+            $maintenanceMode: '%maintenance%'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+# Passer la variable maintenance à Twig pour la rendre disponible globalement
 twig:
     globals:
-        maintenance: false
+        maintenance: '%maintenance%'
