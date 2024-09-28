@@ -63,6 +63,14 @@ readonly class UserListener
 
     public function preUpdate(User $user, PreUpdateEventArgs $args): void
     {
-        $user->setEditedAt(new DateTimeImmutable());
+        $profileFields = ['username', 'email', 'firstName', 'lastName', 'address', 'phoneNumber'];
+
+        foreach ($profileFields as $field) {
+            if ($args->hasChangedField($field)) {
+                $user->setEditedAt(new DateTimeImmutable());
+                break;
+            }
+        }
     }
+
 }
