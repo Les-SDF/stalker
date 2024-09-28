@@ -12,6 +12,8 @@ use App\Service\UserManagerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Random\RandomException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Exception\JsonException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -107,17 +109,20 @@ class UserController extends AbstractController
     }
 
     #[Route('/api/users/check-profile-code-availability', name: 'check_profile_code_availability', options: ['expose' => true], methods: ['POST'])]
-    public function checkProfileCodeAvailability(Request $request, UserManagerInterface $userManager): Response
+    public function checkProfileCodeAvailability(Request $request, UserManagerInterface $userManager): JsonResponse
     {
         try {
-            $data = json_decode($request->getContent(), true);
-            if (!isset($data['profileCode'])) {
+            $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
+            if (empty($data['profileCode'])) {
                 return $this->json(['error' => 'Profile code not provided'], Response::HTTP_BAD_REQUEST);
             }
 
             $isAvailable = $userManager->isProfileCodeAvailable($data['profileCode']);
 
             return $this->json(['is_available' => $isAvailable], Response::HTTP_OK);
+        } catch (JsonException $e) {
+            return $this->json(['error' => 'Invalid JSON: ' . $e->getMessage()], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             return $this->json(['error' => 'An error occurred: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
