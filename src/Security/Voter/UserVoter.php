@@ -38,9 +38,13 @@ final class UserVoter extends AbstractVoter
                 }
                 break;
             case self::DELETE:
-                if ($this->security->isGranted("ROLE_ADMIN") &&
-                    !in_array("ROLE_ADMIN", $user->getRoles()) ||
-                    $subject === $user) {
+                if ($subject === $user) {
+                    return true;
+                }
+                if ($this->security->isGranted("ROLE_ADMIN")) {
+                    if (in_array("ROLE_ADMIN", $subject->getRoles())) {
+                        return false;
+                    }
                     return true;
                 }
                 break;
