@@ -4,7 +4,8 @@
 
 # Mettre en place le projet
 
-Copier le .env
+- S'assurer que le `.env` est bien configuré
+- Exécuter les commandes suivantes :
 
 ```shell
 docker exec -it but3-web-container-server-1 bash
@@ -27,6 +28,11 @@ php bin/console doctrine:schema:update --force
 ```
 
 ```shell
+php bin/console doctrine:fixtures:load
+```
+- **Entrer :** yes
+
+```shell
 npm install
 ```
 
@@ -34,24 +40,26 @@ npm install
 npm run build
 ```
 
-http://localhost:80/stalker/public/
+- Le site sera disponible sur ce lien : http://localhost:80/stalker/public/
 
 # Investissement de chacun
 
 - #### Peter POIRRIER : 33%
-  - Listes des utilisateurs (back + front)
-  - Modification du code utilisateurs
-  - Participation à la création du front et back pour le profil user
+  - Liste des utilisateurs back & front
+  - Modification du code de profil utilisateur
+  - Participation à la création du back & front du profil utilisateur
   - Mise en place du système de drapeau
-  - Creation des commandes
+  - Création des commandes
   - Système d'authentification pour les réseaux sociaux (ne marche que pour steam, je n'ai pas eu le temps de le rendre générique)
 - #### Nikhil RAM : 32%
   - Formulaire + front de la page utilisateur
 - #### Quentin RIOS-SERRA : 34%
   - Initialisation du projet
-  - Mise en place du système de pop up
-  - Création du sign in et sign out (back + front)
-  - Correcteur de bug professionnel
+  - Mise en place du système de pop-up
+  - Création du sign-up, sign-in et sign-out back & front
+  - Création du UserListener
+  - Redirection sur le code de profil custom (enlevé)
+  - Ajout des fixtures
 
 
 # Fonctionnement de l'application
