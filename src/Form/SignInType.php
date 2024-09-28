@@ -25,10 +25,6 @@ class SignInType extends AbstractType
             ->add('password', PasswordType::class, [
                 'mapped' => false
             ])
-            ->add('remember', CheckboxType::class, [
-                'required' => false,
-                'mapped' => false
-            ])
             ->add('submit', SubmitType::class);
     }
 
