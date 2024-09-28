@@ -4,6 +4,7 @@ namespace App\EventSubscriber;
 
 use App\Entity\User;
 use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Http\Event\LoginFailureEvent;
@@ -12,7 +13,10 @@ use Symfony\Component\Security\Http\Event\LogoutEvent;
 
 readonly class AuthenticationSubscriber
 {
-    public function __construct(private RequestStack $requestStack){}
+    public function __construct(private RequestStack           $requestStack,
+                                private EntityManagerInterface $entityManager)
+    {
+    }
 
     #[AsEventListener]
     public function onLoginSuccess(LoginSuccessEvent $event): void
@@ -22,6 +26,8 @@ readonly class AuthenticationSubscriber
          */
         $user = $event->getUser();
         $user->setConnectedAt(new DateTimeImmutable());
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
         $flashBag = $this->requestStack->getSession()->getFlashBag();
         $flashBag->add("success", "You are signed in.");
     }
