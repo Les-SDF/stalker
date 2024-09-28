@@ -51,14 +51,14 @@ npm run build
   - Mise en place du système de drapeau
   - Création des commandes
   - Système d'authentification pour les réseaux sociaux (ne marche que pour steam, je n'ai pas eu le temps de le rendre générique)
-- #### Nikhil RAM : 33%
-  - ** Architecte du Front-End Utilisateur ** : Conception et déploiement d'un formulaire et d'une interface utilisateur révolutionnaires, redéfinissant l'expérience client.
-  - ** Ingénieur des Adresses et Mises à Jour ** : Élaboration d'un code puissant pour la gestion des adresses et des opérations de mise à jour, établissant de nouveaux standards d'efficacité.
-  - ** Créateur des Entités Fondamentales ** : Construction des entités essentielles liées à la base de données, posant les fondations solides de l'architecture du système.
-  - ** Maître du Design ** : Correction et création de designs époustouflants pour la barre de navigation, les listes, les boutons et les pages de maintenance, offrant une expérience utilisateur incomparable.
-  - ** Innovateur des Fonctionnalités ** : Correction et ajout de fonctionnalités innovantes, propulsant l'application vers de nouveaux sommets.
-  - ** Pionnier du Système de Pagination ** : Contribution clé au développement du système de pagination, optimisant l'accès aux vastes ensembles de données.
-  - ** Pilier du Contrôleur ** : Assistance cruciale dans la correction des fonctions du contrôleur, notamment pour la suppression, la mise à jour, garantissant un fonctionnement sans faille.
+- #### Nikhil RAM : 3300000000%
+  - **Architecte du Front-End Utilisateur** : Conception et déploiement d'un formulaire et d'une interface utilisateur révolutionnaires, redéfinissant l'expérience client.
+  - **Ingénieur des Adresses et Mises à Jour** : Élaboration d'un code puissant pour la gestion des adresses et des opérations de mise à jour, établissant de nouveaux standards d'efficacité.
+  - **Créateur des Entités Fondamentales** : Construction des entités essentielles liées à la base de données, posant les fondations solides de l'architecture du système.
+  - **Maître du Design** : Correction et création de designs époustouflants pour la barre de navigation, les listes, les boutons et les pages de maintenance, offrant une expérience utilisateur incomparable.
+  - **Innovateur des Fonctionnalités** : Correction et ajout de fonctionnalités innovantes, propulsant l'application vers de nouveaux sommets.
+  - **Pionnier du Système de Pagination** : Contribution clé au développement du système de pagination, optimisant l'accès aux vastes ensembles de données.
+  - **Pilier du Contrôleur** : Assistance cruciale dans la correction des fonctions du contrôleur, notamment pour la suppression, la mise à jour, garantissant un fonctionnement sans faille.
 - #### Quentin RIOS-SERRA : 34%
   - Initialisation du projet
   - Mise en place du système de pop-up
