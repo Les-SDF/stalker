@@ -93,7 +93,10 @@ class UserController extends AbstractController
 
         $form = $this->createForm(UpdateCodeType::class, $user);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $newProfileCode = $form->get('profileCode')->getData();
+            $user->setProfileCode($newProfileCode);
             $entityManager->persist($user);
             $entityManager->flush();
             $this->addFlash('success', 'Profile code updated successfully');
