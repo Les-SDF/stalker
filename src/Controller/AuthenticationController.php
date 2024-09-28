@@ -16,7 +16,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class AuthenticationController extends AbstractController
 {
-    #[Route('/sign-up', name: 'sign_up', methods: ['POST'])]
+    #[Route('/sign-up', name: 'sign_up', methods: ['POST', 'GET'])]
     public function signUp(FormManagerInterface        $formManager,
                            Request                     $request,
                            UserManagerInterface        $userManager,
@@ -59,6 +59,7 @@ class AuthenticationController extends AbstractController
         return $this->redirectToRoute('homepage');
     }
 
+    // TODO: Vérifier si la date de connexion est bien mise à jour
     #[Route('/sign-in', name: 'sign_in', methods: ['GET', 'POST'])]
     public function signIn(AuthenticationUtils $authenticationUtils): Response
     {

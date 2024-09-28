@@ -52,8 +52,7 @@
                             "placeholder": "••••••••"
                         }
                     }) }}
-                    <p class="mt-2 text-font-900 text-sm dark:text-white">Must be at least 8 characters long and contain
-                        1 uppercase letter, 1 lowercase letter, and 1 digit</p>
+                    <p class="mt-2 text-font-900 text-sm dark:text-white">Must be at least 8 characters long and contain 1 uppercase letter, 1 lowercase letter, and 1 digit</p>
                 </div>
                 <div>
                     {{ form_label(form.password.second, "Repeat your password", {
@@ -67,6 +66,20 @@
                             "placeholder": "••••••••"
                         }
                     }) }}
+                </div>
+                <div>
+                    {{ form_label(form.profileCode, "Custom profile code (optionnal)", {
+                        "label_attr": {
+                            "class": "block mb-2 text-sm font-medium text-font-900 dark:text-white"
+                        }
+                    }) }}
+                    {{ form_widget(form.profileCode, {
+                        "attr": {
+                            "id": "profile-code-input",
+                            "class": "bg-gray-50 border border-gray-300 text-font-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        }
+                    }) }}
+                    <p class="mt-2 text-font-900 text-sm dark:text-white">Must be at least 4 alphanumeric characters long</p>
                 </div>
                 <div class="flex justify-between">
                     <div class="flex items-start">
@@ -87,6 +100,7 @@
                 {{ form_widget(form.submit, {
                     "label": "Create your account",
                     "attr": {
+                        "id" : "submit-button",
                         "class": "w-full text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                     }
                 }) }}
