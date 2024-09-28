@@ -83,8 +83,16 @@
             </div>
         </div>
 
-        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') and user.id == app.user.id %}
-            <div class="flex space-x-8 ">
+        {% if is_granted('ROLE_ADMIN') %}
+            <div class="flex space-x-8">
+                <button class="bg-gray-300 rounded-xl p-2 text-black transition-all duration-500 hover:bg-gray-400 hover:scale-110"
+                        data-modal-target="delete-modal"
+                        data-modal-toggle="delete-modal" type="button">
+                    Delete Account
+                </button>
+            </div>
+        {% elseif is_granted('ROLE_USER') and user.id == app.user.id %}
+            <div class="flex space-x-8">
                 <button class="bg-primary-700 rounded-xl p-2 text-white transition-all duration-500 hover:bg-primary-800 hover:scale-110"
                         onclick="window.location.href='{{ path('update_user', { profileCode: user.profileCode }) }}'"
                         type="button">
