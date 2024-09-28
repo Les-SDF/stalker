@@ -1,13 +1,3 @@
-// TODO: Faire la méthode de vérification de la disponibilité d'un code de profil en appelant la route check_profile_code_availability
-
-/**
- * La route doit être appeler en POST et demande un paramètre profileCode
- * Voici ce que la route retourne en JSON :
- * {
- *     "is_available": true|false
- * }
- */
-
 document.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('profile-code-input');
     const submitButton = document.getElementById('submit-button');

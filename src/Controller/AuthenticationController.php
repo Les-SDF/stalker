@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Enum\Visibility;
 use App\Form\SignUpType;
 use App\Service\FlashMessageHelperInterface;
 use App\Service\FormManagerInterface;
 use App\Service\UserManagerInterface;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,20 +57,16 @@ class AuthenticationController extends AbstractController
             $flashMessageHelper->addFormErrorsAsFlashMessages($form);
         }
 
-        // TODO: Faire en sorte que le formulaire soit reaffiché automatiquement en cas d'erreur
         return $this->redirectToRoute('homepage');
     }
 
-    // TODO: Vérifier si la date de connexion est bien mise à jour
     #[Route('/sign-in', name: 'sign_in', methods: ['GET', 'POST'])]
-    public function signIn(AuthenticationUtils $authenticationUtils): Response
+    public function signIn(): Response
     {
         if ($this->isGranted("ROLE_USER")) {
             $this->addFlash("warning", "You are already signed in.");
             return $this->redirectToRoute("homepage");
         }
-        return $this->redirectToRoute("homepage", [
-            "email" => $authenticationUtils->getLastUsername(),
-        ]);
+        return $this->redirectToRoute("homepage");
     }
 }
