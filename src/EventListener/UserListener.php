@@ -58,7 +58,9 @@ readonly class UserListener
         if ($this->geolocationEnabled) {
             $user->setCountryCode($this->geolocationService->getCountryCode());
         }
-        $this->userManager->generateProfileCode($user);
+        if (is_null($user->getProfileCode())) {
+            $this->userManager->generateProfileCode($user);
+        }
     }
 
     public function preUpdate(User $user, PreUpdateEventArgs $args): void

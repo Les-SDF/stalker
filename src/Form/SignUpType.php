@@ -32,6 +32,13 @@ class SignUpType extends AbstractType
                 'invalid_message' => 'The password fields must match.',
                 'required' => true
             ])
+            ->add('profileCode', TextType::class, [
+                'required' => false,
+                'attr' => [
+                    'minlength' => 4,
+                    'maxlength' => 255
+                ],
+            ])
             ->add('visibility', CheckboxType::class, [
                 'required' => false,
                 'mapped' => false,
