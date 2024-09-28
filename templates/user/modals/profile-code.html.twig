@@ -9,17 +9,17 @@
             input.addEventListener('input', async () => {
                 const code = input.value;
 
+                submitButton.classList.add('opacity-50');
+                submitButton.classList.remove('opacity-100');
+                submitButton.disabled = true;
+
                 const isValid = code.length >= 4 && code.length < 255 && /^[a-zA-Z0-9]+$/.test(code);
                 const isAvailable = await checkCodeProfile(code);
 
                 if (isValid && isAvailable) {
-                    input.classList.remove('border-red-500');
-                    input.classList.add('border-green-500');
+                    submitButton.classList.remove('opacity-50');
+                    submitButton.classList.add('opacity-100');
                     submitButton.disabled = false;
-                } else {
-                    input.classList.add('border-red-500');
-                    input.classList.remove('border-green-500');
-                    submitButton.disabled = true;
                 }
             });
         }
@@ -88,7 +88,7 @@
                     "label": "Mettre à jour",
                     "attr": {
                         "id" : "submit-button",
-                        "class": "w-full text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800",
+                        "class": "w-full text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 opacity-100",
                         "disabled": true
                     }
                 }) }}
