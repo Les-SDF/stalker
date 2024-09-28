@@ -1,0 +1,33 @@
+<header class="w-full flex justify-center mt-2">
+    <nav class="flex space-x-16">
+        <div>
+            <a href="{{ path('homepage') }}"
+               class="flex items-center py-2 px-4 w-full text-base font-medium text-font-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                Home
+            </a>
+        </div>
+        <div class="flex gap-4">
+            {% if not is_granted('ROLE_USER') %}
+                <div>
+                    <button data-modal-toggle="sign-in-modal"
+                            class="p-2 w-full text-base font-medium text-font-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        Sign In
+                    </button>
+                </div>
+                <div>
+                    <button data-modal-toggle="sign-up-modal"
+                            class="bg-primary-700 flex items-center py-2 px-4 w-full text-base font-medium text-white rounded-lg transition duration-75 group hover:bg-primary-800 dark:text-white dark:hover:bg-gray-700">
+                        Sign Up
+                    </button>
+                </div>
+            {% else %}
+                <div>
+                    <a href="{{ path('_logout_main') }}"
+                       class="bg-secondary-700 flex items-center py-2 px-4 w-full text-base font-medium text-white rounded-lg transition duration-75 group hover:bg-secondary-800 dark:text-white dark:hover:bg-gray-700">
+                        Disconnect
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </nav>
+</header>

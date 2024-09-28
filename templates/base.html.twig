@@ -15,7 +15,7 @@
     {% endblock %}
 </head>
 <body>
-    {% include "partials/side-navigation.html.twig" %}
+    {% include "partials/navigation.html.twig" %}
     {% include "partials/flash-messages.html.twig" %}
     {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}
         {% include "user/modals/sign-up.html.twig" %}
