@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\SocialMedia;
 use App\Entity\User;
 use App\Entity\UserSocialMedia;
 use App\Repository\SocialMediaRepository;
@@ -65,6 +66,14 @@ class SteamController extends AbstractController
                 $playerInfo = $data['response']['players'][0];
                 $user = $this->getUser();
                 $social = $mediaRepository->findOneBy(['name' => 'steam']);
+
+                if (!$social) {
+                    $social = new SocialMedia();
+                    $social->setName('steam');
+                    $entityManager->persist($social);
+                    $entityManager->flush();
+                }
+
                 $userSocialMedia = new UserSocialMedia();
                 $userSocialMedia->setSocialMedia($social);
                 $userSocialMedia->setUser($user);
