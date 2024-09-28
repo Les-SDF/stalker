@@ -107,11 +107,18 @@ Une barre de navigation (nav bar) est présente sur toutes les pages, offrant le
 
 # Commande
 
+- **Créer un utilisateur :**
+```bash
+  php bin/console create:user {login} {email} {password}
+ ```
+Si les paramètres ne sont pas renseignés, la commande les demandera interactivement.
+
 - **Promouvoir un utilisateur en tant qu'administrateur :**
 ```bash
   php bin/console promote:admin {userCode}
  ```
+
 - **Démouvoir un utilisateur de son statut d'administrateur :**
 ```bash
-  php bin/console promote:admin {userCode}
+  php bin/console revoke:admin {userCode}
  ```
