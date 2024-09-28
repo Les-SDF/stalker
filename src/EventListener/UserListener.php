@@ -50,12 +50,11 @@ readonly class UserListener
     public function prePersist(User $user, PrePersistEventArgs $args): void
     {
         $user->setCreatedAt(new DateTimeImmutable());
-        $user->setConnectedAt(new DateTimeImmutable());
 
         if (is_null($user->getVisibility())) {
             $user->setVisibility(Visibility::Public);
         }
-        if ($this->geolocationEnabled) {
+        if ($this->geolocationEnabled && is_null($user->getCountryCode())) {
             $user->setCountryCode($this->geolocationService->getCountryCode());
         }
         if (is_null($user->getProfileCode())) {

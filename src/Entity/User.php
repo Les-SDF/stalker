@@ -10,9 +10,6 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\Embeddable;
-use Doctrine\ORM\Mapping\Embedded;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
@@ -84,17 +81,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private ?string $password = null;
 
-    #[ORM\Column(nullable: true, enumType: Gender::class)]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['user_public'])]
-    private ?Gender $gender = null;
+    private ?string $firstname = null;
 
-    #[ORM\Column(nullable: true, enumType: Sexuality::class)]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['user_public'])]
-    private ?Sexuality $sexuality = null;
+    private ?string $lastname = null;
 
-    #[ORM\Column(enumType: Visibility::class)]
-    #[Groups(['user_public'])]
-    private ?Visibility $visibility = null;
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $ProfilePicture = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\Length(
@@ -110,17 +106,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user_public'])]
     private ?string $profileCode = null;
 
-    #[ORM\Column]
+    #[ORM\Column(enumType: Visibility::class)]
     #[Groups(['user_public'])]
-    private ?DateTimeImmutable $connectedAt = null;
+    private ?Visibility $visibility = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true, enumType: Gender::class)]
     #[Groups(['user_public'])]
-    private ?DateTimeImmutable $createdAt = null;
+    private ?Gender $gender = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: true, enumType: Sexuality::class)]
     #[Groups(['user_public'])]
-    private ?DateTimeImmutable $editedAt = null;
+    private ?Sexuality $sexuality = null;
 
     #[ORM\Column(length: 20, nullable: true)]
     #[Groups(['user_public'])]
@@ -133,21 +129,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user_public'])]
     private ?string $countryCode = null;
 
-    #[ORM\Column(length: 32, nullable: true)]
-    #[Groups(['user_public'])]
-    private ?string $pronouns = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user_public'])]
-    private ?string $aboutMe = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user_public'])]
-    private ?string $firstname = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user_public'])]
-    private ?string $lastname = null;
+    #[ORM\Embedded(class: Address::class, columnPrefix: false)]
+    private Address $address;
 
     /**
      * @var Collection<int, UserSocialMedia>
@@ -155,11 +138,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: UserSocialMedia::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $userSocialMedia;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $ProfilePicture = null;
+    #[ORM\Column(nullable: true)]
+    #[Groups(['user_public'])]
+    private ?DateTimeImmutable $connectedAt = null;
 
-    #[ORM\Embedded(class: Address::class, columnPrefix: false)]
-    private Address $address;
+    #[ORM\Column]
+    #[Groups(['user_public'])]
+    private ?DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups(['user_public'])]
+    private ?DateTimeImmutable $editedAt = null;
 
     public function __construct()
     {
@@ -167,21 +156,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->address = new Address();
     }
 
-
-
     public function getId(): ?int
     {
         return $this->id;
     }
-    public function getAddress(): Address
-    {
-        return $this->address;
-    }
 
-    public function setAddress(Address $address): void
-    {
-        $this->address = $address;
-    }
     public function getEmail(): ?string
     {
         return $this->email;
@@ -228,6 +207,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function addRole(string $role): self
+    {
+        if (!in_array($role, $this->roles, true)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(string $role): self
+    {
+        if (($key = array_search($role, $this->roles, true)) !== false) {
+            unset($this->roles[$key]);
+        }
+
+        $this->roles = array_values($this->roles);
+
+        return $this;
+    }
+
     /**
      * @see PasswordAuthenticatedUserInterface
      */
@@ -252,14 +251,96 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getGender(): ?Gender
+    public function addUserSocialMedium(UserSocialMedia $userSocialMedium): static
     {
-        return $this->gender;
+        if (!$this->userSocialMedia->contains($userSocialMedium)) {
+            $this->userSocialMedia->add($userSocialMedium);
+            $userSocialMedium->setUser($this);
+        }
+
+        return $this;
     }
 
-    public function setGender(Gender $gender): static
+    public function removeUserSocialMedium(UserSocialMedia $userSocialMedium): static
     {
-        $this->gender = $gender;
+        if ($this->userSocialMedia->removeElement($userSocialMedium)) {
+            // set the owning side to null (unless already changed)
+            if ($userSocialMedium->getUser() === $this) {
+                $userSocialMedium->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAddress(): Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(Address $address): static
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getLogin(): ?string
+    {
+        return $this->login;
+    }
+
+    public function setLogin(string $login): static
+    {
+        $this->login = $login;
+
+        return $this;
+    }
+
+    public function getFirstname(): ?string
+    {
+        return $this->firstname;
+    }
+
+    public function setFirstname(?string $firstname): static
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    public function setLastname(?string $lastname): static
+    {
+        $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    public function getProfilePicture(): ?string
+    {
+        return $this->ProfilePicture;
+    }
+
+    public function setProfilePicture(?string $ProfilePicture): static
+    {
+        $this->ProfilePicture = $ProfilePicture;
+
+        return $this;
+    }
+
+    public function getProfileCode(): ?string
+    {
+        return $this->profileCode;
+    }
+
+    public function setProfileCode(string $profileCode): static
+    {
+        $this->profileCode = $profileCode;
 
         return $this;
     }
@@ -276,14 +357,50 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getProfileCode(): ?string
+    public function getGender(): ?Gender
     {
-        return $this->profileCode;
+        return $this->gender;
     }
 
-    public function setProfileCode(string $profileCode): static
+    public function setGender(?Gender $gender): static
     {
-        $this->profileCode = $profileCode;
+        $this->gender = $gender;
+
+        return $this;
+    }
+
+    public function getSexuality(): ?Sexuality
+    {
+        return $this->sexuality;
+    }
+
+    public function setSexuality(?Sexuality $sexuality): static
+    {
+        $this->sexuality = $sexuality;
+
+        return $this;
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(?string $phoneNumber): static
+    {
+        $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
+
+    public function getCountryCode(): ?string
+    {
+        return $this->countryCode;
+    }
+
+    public function setCountryCode(?string $countryCode): static
+    {
+        $this->countryCode = $countryCode;
 
         return $this;
     }
@@ -324,102 +441,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPhoneNumber(): ?string
-    {
-        return $this->phoneNumber;
-    }
-
-    public function setPhoneNumber(?string $phoneNumber): static
-    {
-        $this->phoneNumber = $phoneNumber;
-
-        return $this;
-    }
-
-    public function getCountryCode(): ?string
-    {
-        return $this->countryCode;
-    }
-
-    public function setCountryCode(string $countryCode): static
-    {
-        $this->countryCode = $countryCode;
-
-        return $this;
-    }
-
-    public function getSexuality(): ?Sexuality
-    {
-        return $this->sexuality;
-    }
-
-    public function setSexuality(?Sexuality $sexuality): static
-    {
-        $this->sexuality = $sexuality;
-
-        return $this;
-    }
-
-    public function getPronouns(): ?string
-    {
-        return $this->pronouns;
-    }
-
-    public function setPronouns(?string $pronouns): static
-    {
-        $this->pronouns = $pronouns;
-
-        return $this;
-    }
-
-    public function getAboutMe(): ?string
-    {
-        return $this->aboutMe;
-    }
-
-    public function setAboutMe(?string $aboutMe): static
-    {
-        $this->aboutMe = $aboutMe;
-
-        return $this;
-    }
-
-    public function getFirstname(): ?string
-    {
-        return $this->firstname;
-    }
-
-    public function setFirstname(?string $firstname): static
-    {
-        $this->firstname = $firstname;
-
-        return $this;
-    }
-
-    public function getLastname(): ?string
-    {
-        return $this->lastname;
-    }
-
-    public function setLastname(?string $lastname): static
-    {
-        $this->lastname = $lastname;
-
-        return $this;
-    }
-
-    public function getLogin(): ?string
-    {
-        return $this->login;
-    }
-
-    public function setLogin(string $login): static
-    {
-        $this->login = $login;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, UserSocialMedia>
      */
@@ -427,59 +448,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->userSocialMedia;
     }
-
-    public function addUserSocialMedium(UserSocialMedia $userSocialMedium): static
-    {
-        if (!$this->userSocialMedia->contains($userSocialMedium)) {
-            $this->userSocialMedia->add($userSocialMedium);
-            $userSocialMedium->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserSocialMedium(UserSocialMedia $userSocialMedium): static
-    {
-        if ($this->userSocialMedia->removeElement($userSocialMedium)) {
-            // set the owning side to null (unless already changed)
-            if ($userSocialMedium->getUser() === $this) {
-                $userSocialMedium->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function addRole(string $role): self
-    {
-        if (!in_array($role, $this->roles, true)) {
-            $this->roles[] = $role;
-        }
-
-        return $this;
-    }
-
-    public function removeRole(string $role): self
-    {
-        if (($key = array_search($role, $this->roles, true)) !== false) {
-            unset($this->roles[$key]);
-        }
-
-        $this->roles = array_values($this->roles);
-
-        return $this;
-    }
-
-    public function getProfilePicture(): ?string
-    {
-        return $this->ProfilePicture;
-    }
-
-    public function setProfilePicture(?string $ProfilePicture): static
-    {
-        $this->ProfilePicture = $ProfilePicture;
-
-        return $this;
-    }
 }
-
