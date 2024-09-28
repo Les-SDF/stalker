@@ -13,6 +13,8 @@
         {{ encore_entry_script_tags('app') }}
         {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
+    {% block scripts %}
+    {% endblock %}
 </head>
 <body>
     {% include "partials/navigation.html.twig" %}

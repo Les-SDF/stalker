@@ -1,63 +1,6 @@
 {% set form = updateCodeForm() %}
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const input = document.getElementById('update_code_profileCode');
-        const submitButton = document.getElementById('update_code_submit');
-
-        if (input && submitButton) {
-            input.addEventListener('input', async () => {
-                const code = input.value;
-
-                submitButton.classList.add('opacity-50');
-                submitButton.classList.remove('opacity-100');
-                submitButton.disabled = true;
-
-                const isValid = code.length >= 4 && code.length < 255 && /^[a-zA-Z0-9]+$/.test(code);
-                const isAvailable = await checkCodeProfile(code);
-
-                if (isValid && isAvailable) {
-                    submitButton.classList.remove('opacity-50');
-                    submitButton.classList.add('opacity-100');
-                    submitButton.disabled = false;
-                }
-            });
-        }
-    });
-
-    async function checkCodeProfile(code) {
-        let url = Routing.generate('check_profile_code_availability');
-        let data = {
-            profileCode: code
-        }
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error("Erreur lors de la vérification du code de profil : ", response.status, errorText);
-                return false;
-            }
-
-            const result = await response.json();
-            console.log(result);
-            return result.is_available;
-
-        } catch (error) {
-            console.error("Erreur lors de la vérification du code de profil : ", error);
-            return false;
-        }
-    }
-
-</script>
-
+{% block scripts %}<script defer type="text/javascript" src="{{ asset("js/script.js") }}"></script>{% endblock %}
 
 <div id="edit-code-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative w-full max-w-md max-h-full">
@@ -77,17 +20,17 @@
                         }
                     }) }}
                     {{ form_widget(form.profileCode, {
+                        "id": "profile-code-input",
                         "attr": {
-                            "id": "profile-code-input",
                             "class": "bg-gray-50 border border-gray-300 text-font-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white",
                             "placeholder": "Entrez votre nouveau code"
                         }
                     }) }}
                 </div>
                 {{ form_widget(form.submit, {
+                    "id" : "submit-button",
                     "label": "Mettre à jour",
                     "attr": {
-                        "id" : "submit-button",
                         "class": "w-full text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 opacity-100",
                         "disabled": true
                     }

@@ -6,6 +6,7 @@ module.exports = {
     darkMode: "class",
     content: [
         "./assets/**/*.js",
+        "./public/**/*.js",
         "./templates/**/*.html.twig",
         "./node_modules/flowbite/**/*.js"
     ],
