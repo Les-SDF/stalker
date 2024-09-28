@@ -67,7 +67,7 @@ class UserController extends AbstractController
     }
 
     #[IsGranted('ROLE_USER')]
-    #[Route('/account/delete', name: 'delete_user', options: ['expose' => true], methods: ['DELETE'])]
+    #[Route('/account/delete', name: 'delete_user', options: ['expose' => true], methods: ['DELETE','GET'])]
     public function deleteUser(EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();

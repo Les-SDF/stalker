@@ -8,16 +8,16 @@ use Doctrine\ORM\Mapping\Embeddable;
 #[Embeddable]
 class Address
 {
-    #[Column(type: "string")]
-    private string $street;
+    #[Column(type: "string", nullable: true)]
+    private ?string $street = null;
 
-    #[Column(type: "string")]
-    private string $postalCode;
+    #[Column(type: "string", nullable: true)]
+    private ?string $postalCode = null;
 
-    #[Column(type: "string")]
-    private string $city;
+    #[Column(type: "string", nullable: true)]
+    private ?string $city = null;
 
-    public function getStreet(): string
+    public function getStreet(): ?string
     {
         return $this->street;
     }
@@ -27,7 +27,7 @@ class Address
         $this->street = $street;
     }
 
-    public function getPostalCode(): string
+    public function getPostalCode(): ?string
     {
         return $this->postalCode;
     }
@@ -37,7 +37,7 @@ class Address
         $this->postalCode = $postalCode;
     }
 
-    public function getCity(): string
+    public function getCity(): ?string
     {
         return $this->city;
     }
