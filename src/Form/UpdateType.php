@@ -56,15 +56,6 @@ class UpdateType extends AbstractType
                     new NotNull(),
                 ]
             ])
-            ->add('password', PasswordType::class,[
-                'label' => 'Password',
-                'mapped' => false,
-                'constraints' => [
-                    new NotBlank(),
-                    new NotNull(),
-                    new Length(min: 8, max: 30, minMessage: 'Your password must be at least {{ limit }} characters long.',maxMessage: 'Your password must be at least {{ limit }} characters long.'),
-                ]
-            ])
             ->add('gender', ChoiceType::class, [
                 'label' => 'Gender',
                 'choices' => Gender::cases(),

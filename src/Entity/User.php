@@ -9,6 +9,7 @@ use App\Repository\UserRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
@@ -150,6 +151,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: UserSocialMedia::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $userSocialMedia;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $ProfilePicture = null;
 
     public function __construct()
     {
@@ -447,6 +451,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->roles = array_values($this->roles);
+
+        return $this;
+    }
+
+    public function getProfilePicture(): ?string
+    {
+        return $this->ProfilePicture;
+    }
+
+    public function setProfilePicture(?string $ProfilePicture): static
+    {
+        $this->ProfilePicture = $ProfilePicture;
 
         return $this;
     }

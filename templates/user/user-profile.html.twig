@@ -20,15 +20,17 @@
 
         <div class="relative flex items-center shadow-md rounded-lg p-4 border-2 border-gray-50 mb-6 mt-14">
             <div class="w-16 h-16 bg-gray-300 rounded-full flex-shrink-0 mr-4">
-                <img src="{{ asset("img/default-profile-picture.jpg") }}" alt="Profile picture"
+                <img src="{{ asset(user.profilePicture ? 'img/profile_picture/' ~ user.profilePicture : "img/default-profile-picture.jpg") }}" alt="Profile picture"
                      class="w-full h-full object-cover rounded-full" height="50px" width="50px">
             </div>
             <div class="ml-4 flex flex-col space-y-2">
                 <h2 class="text-xl font-semibold">{{ user.firstname|default('N/A') }} {{ user.lastname|default('N/A') }}</h2>
-                <p class=""><strong>Date d'inscription :</strong> {{ user.createdAt|date('d F Y')|default('Date Inconnue') }}
+                <p class=""><strong>Date d'inscription
+                        :</strong> {{ user.createdAt|date('d F Y')|default('Date Inconnue') }}
                 <p class=""><strong>Genre :</strong> {{ user.gender.value|default('N/A') }}</p>
-                <img src="https://flagsapi.com/{{ user.countryCode|default('US') }}/shiny/64.png" alt="{{ user.countryCode }}"
-                     class="absolute top-4 right-4 w-8 h-8" />
+                <img src="https://flagsapi.com/{{ user.countryCode|default('US') }}/shiny/64.png"
+                     alt="{{ user.countryCode }}"
+                     class="absolute top-4 right-4 w-8 h-8"/>
             </div>
         </div>
 
@@ -45,24 +47,24 @@
         <div class="bg-white shadow-md rounded-lg p-4 border-2 border-gray-50 mb-6">
             <h3 class="text-lg font-semibold mb-2">Réseaux Sociaux</h3>
             <div class="flex-col flex space-y-2">
-
+                {% set hasSteam = false %}
                 {% for social in user.userSocialMedia %}
 
-                <p class=""><strong> {{ social.socialMedia.name }}  : <a href="{{ social.url }}"> {{ social.username }} </a> </strong>
+                {% if social.socialMedia.name == 'steam' %}
+                    {% set hasSteam = true %}
+                {% endif %}
+                <p class=""><strong> {{ social.socialMedia.name }} : <a
+                                href="{{ social.url }}" class="text-gray-600 transition-all duration-500 hover:text-black"> {{ social.username }} </a> </strong>
 
-                {% endfor %}
-
-                    {% if null is null %}
+                    {% endfor %}
+                    {% if is_granted('ROLE_USER') and app.user and app.user.id == user.id and not hasSteam %}
                 <div class="mt-4">
                     <a href="{{ path('steam_connect') }}">
                         <img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_large_noborder.png"
                              alt="Sign in with Steam" class="w-48 h-auto transition-all duration-500 hover:scale-110">
                     </a>
                 </div>
-                {% else %}
-                    {{ user.adresse.ville|default('N/A') }}
                 {% endif %}
-                </p>
             </div>
         </div>
 
@@ -78,7 +80,7 @@
             <div class="flex space-x-8 ">
                 <button class="bg-primary-700 rounded-xl p-2 text-white transition-all duration-500 hover:bg-primary-800 hover:scale-110"
                         onclick="window.location.href='{{ path('update_user', { profileCode: user.profileCode }) }}'"
-                         type="button">
+                        type="button">
                     Modifier le profil
                 </button>
                 <button class="bg-gray-300 rounded-xl p-2 text-black transition-all duration-500 hover:bg-gray-400 hover:scale-110"

@@ -14,7 +14,7 @@
                 }}">
                     <div class="bg-white border border-gray-200 rounded-lg shadow-md p-4 flex items-center mb-5">
                         <div class="w-16 h-16 bg-gray-300 rounded-full flex-shrink-0 mr-4">
-                            <img src="{{ asset("img/default-profile-picture.jpg") }}" alt="{{ user.id }}" class="w-full h-full object-cover rounded-full" height="50px" width="50px">
+                            <img src="{{ asset(user.profilePicture ? 'img/profile_picture/' ~ user.profilePicture : "img/default-profile-picture.jpg") }}" alt="{{ user.id }}" class="w-full h-full object-cover rounded-full" height="50px" width="50px">
                         </div>
                         <div class="ml-4">
                             <h2 class="text-xl font-semibold">

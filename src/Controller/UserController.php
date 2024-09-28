@@ -32,7 +32,7 @@ class UserController extends AbstractController
     public function updateUser(CountryService         $country,
                                Request                $request,
                                EntityManagerInterface $entityManager,
-                               FlashMessageHelper     $flashMessageHelper): Response
+                               FlashMessageHelper     $flashMessageHelper, UserManagerInterface $userManager): Response
     {
         /**
          * @var $user User
@@ -51,6 +51,7 @@ class UserController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $userManager->storeProfilePicture($user, $form['profilePicture']->getData());
             $entityManager->persist($user);
             $entityManager->flush();
             return $this->redirectToRoute('user_profile', [

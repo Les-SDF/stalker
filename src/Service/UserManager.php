@@ -39,9 +39,9 @@ readonly class UserManager implements UserManagerInterface
                                         ?UploadedFile $file): void
     {
         if ($file != null) {
-            $fileName = uniqid() . $file->guessExtension();
+            $fileName = uniqid() .'.'. $file->guessExtension();
             $file->move($this->profilePictureDirectory, $fileName);
-            //$user->setProfilePicture($fileName);
+            $user->setProfilePicture($fileName);
         }
     }
 
