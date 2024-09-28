@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UpdateCodeType;
 use App\Form\UpdateType;
+use App\Repository\UserRepository;
 use App\Service\CountryService;
 use App\Service\FlashMessageHelper;
 use App\Service\FlashMessageHelperInterface;
@@ -12,6 +13,7 @@ use App\Service\UserManagerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Random\RandomException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Exception\JsonException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -67,17 +69,25 @@ class UserController extends AbstractController
     }
 
     #[IsGranted('ROLE_USER')]
-    #[Route('/account/delete', name: 'delete_user', options: ['expose' => true], methods: ['DELETE','GET'])]
-    public function deleteUser(EntityManagerInterface $entityManager): Response
+    #[Route('/account/{profileCode}/delete', name: 'delete_user', options: ['expose' => true], methods: ['DELETE', 'GET'])]
+    public function deleteUser(string $profileCode, EntityManagerInterface $entityManager, Request $request, Security $security, UserRepository $repository): Response
     {
-        $user = $this->getUser();
+        $user = $repository->findOneBy(["profileCode" => $profileCode]);
+
         $this->denyAccessUnlessGranted("USER_DELETE", $user);
+
         $entityManager->remove($user);
         $entityManager->flush();
+
+        if ($this->getUser()->getId() === $user->getId()) {
+            $request->getSession()->invalidate();
+            $security->logout(false);
+        }
 
         $this->addFlash('success', 'User deleted successfully');
         return $this->redirectToRoute('homepage');
     }
+
 
     #[IsGranted('ROLE_USER')]
     #[Route('/account/update-profile-code', name: 'update_profile_code', options: ['expose' => true], methods: ['POST'])]
