@@ -83,7 +83,7 @@
             </div>
         </div>
 
-        {% if is_granted('ROLE_ADMIN') %}
+        {% if is_granted('ROLE_ADMIN') and not is_granted('ROLE_USER_ADMIN', user) %}
             <div class="flex space-x-8">
                 <button class="bg-gray-300 rounded-xl p-2 text-black transition-all duration-500 hover:bg-gray-400 hover:scale-110"
                         data-modal-target="delete-modal"
@@ -98,15 +98,15 @@
                         type="button">
                     Edit Profile
                 </button>
-                <button class="bg-gray-300 rounded-xl p-2 text-black transition-all duration-500 hover:bg-gray-400 hover:scale-110"
-                        data-modal-target="delete-modal"
-                        data-modal-toggle="delete-modal" type="button">
-                    Delete Account
-                </button>
                 <button data-modal-target="edit-code-modal"
                         data-modal-toggle="edit-code-modal" type="button"
                         class="bg-gray-300 rounded-xl p-2 text-black transition-all duration-500 hover:bg-gray-400 hover:scale-110">
                     Edit Code
+                </button>
+                <button class="bg-gray-300 rounded-xl p-2 text-black transition-all duration-500 hover:bg-gray-400 hover:scale-110"
+                        data-modal-target="delete-modal"
+                        data-modal-toggle="delete-modal" type="button">
+                    Delete Account
                 </button>
             </div>
         {% endif %}
