@@ -20,7 +20,8 @@
 
         <div class="relative flex items-center shadow-md rounded-lg p-4 border-2 border-gray-50 mb-6 mt-14">
             <div class="w-16 h-16 bg-gray-300 rounded-full flex-shrink-0 mr-4">
-                <img src="{{ asset(user.profilePicture ? 'img/profile_picture/' ~ user.profilePicture : "img/default-profile-picture.jpg") }}" alt="Profile picture"
+                <img src="{{ asset(user.profilePicture ? 'img/profile_picture/' ~ user.profilePicture : "img/default-profile-picture.jpg") }}"
+                     alt="Profile picture"
                      class="w-full h-full object-cover rounded-full" height="50px" width="50px">
             </div>
             <div class="ml-4 flex flex-col space-y-2">
@@ -35,9 +36,12 @@
         <div class="bg-white shadow-md rounded-lg p-4 border-2 border-gray-50 mb-6">
             <h3 class="text-lg font-semibold mb-2">Dates</h3>
             <div class="flex-col flex space-y-2">
-                <p class=""><strong>Registration Date :</strong> {{ user.createdAt|date('d F Y')|default('Unknown Date') }} </p>
-                <p class=""><strong>Connexion Date :</strong> {{ user.connectedAt|date('d F Y')|default('Unknown Date') }} </p>
-                <p class=""><strong>Last Update Date :</strong> {{ user.editedAt|date('d F Y')|default('Unknown Date') }} </p>
+                <p class=""><strong>Registration Date
+                        :</strong> {{ user.createdAt|date('d F Y')|default('Unknown Date') }} </p>
+                <p class=""><strong>Connexion Date
+                        :</strong> {{ user.connectedAt|date('d F Y')|default('Unknown Date') }} </p>
+                <p class=""><strong>Last Update Date
+                        :</strong> {{ user.editedAt|date('d F Y')|default('Unknown Date') }} </p>
             </div>
         </div>
 
@@ -61,7 +65,9 @@
                     {% set hasSteam = true %}
                 {% endif %}
                 <p class=""><strong> {{ social.socialMedia.name|capitalize }} : <a
-                                href="{{ social.url }}" class="text-gray-600 transition-all duration-500 hover:text-black"> {{ social.username }} </a> </strong>
+                                href="{{ social.url }}"
+                                class="text-gray-600 transition-all duration-500 hover:text-black"> {{ social.username }} </a>
+                    </strong>
 
                     {% endfor %}
                     {% if is_granted('ROLE_USER') and app.user and app.user.id == user.id and not hasSteam %}
@@ -83,30 +89,30 @@
             </div>
         </div>
 
-        {% if is_granted('ROLE_ADMIN') %}
-            <div class="flex space-x-8">
-                <button class="bg-gray-300 rounded-xl p-2 text-black transition-all duration-500 hover:bg-gray-400 hover:scale-110"
-                        data-modal-target="delete-modal"
-                        data-modal-toggle="delete-modal" type="button">
-                    Delete Account
-                </button>
-            </div>
-        {% elseif is_granted('ROLE_USER') and user.id == app.user.id %}
+        {% if is_granted('ROLE_USER') and user.id == app.user.id %}
             <div class="flex space-x-8">
                 <button class="bg-primary-700 rounded-xl p-2 text-white transition-all duration-500 hover:bg-primary-800 hover:scale-110"
                         onclick="window.location.href='{{ path('update_user', { profileCode: user.profileCode }) }}'"
                         type="button">
                     Edit Profile
                 </button>
+                <button data-modal-target="edit-code-modal"
+                        data-modal-toggle="edit-code-modal" type="button"
+                        class="bg-gray-300 rounded-xl p-2 text-black transition-all duration-500 hover:bg-gray-400 hover:scale-110">
+                    Edit Code
+                </button>
                 <button class="bg-gray-300 rounded-xl p-2 text-black transition-all duration-500 hover:bg-gray-400 hover:scale-110"
                         data-modal-target="delete-modal"
                         data-modal-toggle="delete-modal" type="button">
                     Delete Account
                 </button>
-                <button data-modal-target="edit-code-modal"
-                        data-modal-toggle="edit-code-modal" type="button"
-                        class="bg-gray-300 rounded-xl p-2 text-black transition-all duration-500 hover:bg-gray-400 hover:scale-110">
-                    Edit Code
+            </div>
+        {% elseif is_granted('ROLE_ADMIN') and not is_granted('ROLE_USER_ADMIN', user) %}
+            <div class="flex space-x-8">
+                <button class="bg-gray-300 rounded-xl p-2 text-black transition-all duration-500 hover:bg-gray-400 hover:scale-110"
+                        data-modal-target="delete-modal"
+                        data-modal-toggle="delete-modal" type="button">
+                    Delete Account
                 </button>
             </div>
         {% endif %}
