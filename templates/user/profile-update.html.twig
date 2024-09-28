@@ -30,6 +30,18 @@
                 {{ form_widget(form.countryCode, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
             </div>
             <div>
+                {{ form_label(form.address.postalCode, 'Postal Code', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}
+                {{ form_widget(form.address.postalCode, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
+            </div>
+            <div>
+                {{ form_label(form.address.city, 'City', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}
+                {{ form_widget(form.address.city, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
+            </div>
+            <div>
+                {{ form_label(form.address.street, 'Street', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}
+                {{ form_widget(form.address.street, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
+            </div>
+            <div>
                 {{ form_label(form.gender, 'Gender', {'label_attr': {'class': 'text-font-900 mb-2 mt-2  block text-sm font-medium'}}) }}
                 {{ form_widget(form.gender, {'attr': {'class': 'text-font-900 focus:ring-primary-500 focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm'}}) }}
             </div>

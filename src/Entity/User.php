@@ -10,6 +10,9 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Embeddable;
+use Doctrine\ORM\Mapping\Embedded;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
@@ -155,9 +158,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $ProfilePicture = null;
 
+    #[ORM\Embedded(class: Address::class, columnPrefix: false)]
+    private Address $address;
+
     public function __construct()
     {
         $this->userSocialMedia = new ArrayCollection();
+        $this->address = new Address();
     }
 
 
@@ -166,7 +173,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->id;
     }
+    public function getAddress(): Address
+    {
+        return $this->address;
+    }
 
+    public function setAddress(Address $address): void
+    {
+        $this->address = $address;
+    }
     public function getEmail(): ?string
     {
         return $this->email;
@@ -467,3 +482,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 }
+

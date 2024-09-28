@@ -38,9 +38,9 @@
             <h3 class="text-lg font-semibold mb-2">Adresse Principale</h3>
             <div class="flex-col flex space-y-2">
                 <p class=""><strong>Pays :</strong> {{ country|default('N/A') }}</p>
-                <p class=""><strong>Rue :</strong> {{ user.adresse.rue |default('N/A') }}</p>
-                <p class=""><strong>Ville :</strong> {{ user.adresse.ville|default('N/A') }}</p>
-                <p class=""><strong>Code postal :</strong> {{ user.adresse.codePostal|default('N/A') }}</p>
+                <p class=""><strong>Rue :</strong> {{ user.address.street|default('N/A') }}</p>
+                <p class=""><strong>Ville :</strong> {{ user.address.city|default('N/A') }}</p>
+                <p class=""><strong>Code postal :</strong> {{ user.address.postalCode|default('N/A') }}</p>
             </div>
         </div>
 

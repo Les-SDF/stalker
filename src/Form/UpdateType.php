@@ -94,6 +94,10 @@ class UpdateType extends AbstractType
                 'choices' => $countryChoices,
                 'mapped' => true,
             ])
+            ->add('address', AddressType::class, [
+                'mapped' => true,
+                'required' => false,
+            ])
             ->add('profilePicture', FileType::class, [
                 'label' => 'Profile photo',
                 'mapped' => false,
