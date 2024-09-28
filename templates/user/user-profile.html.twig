@@ -71,10 +71,11 @@
                     {% endfor %}
                     {% if is_granted('ROLE_USER') and app.user and app.user.id == user.id and not hasSteam %}
                 <div class="mt-4">
-                    <a href="{{ path('steam_connect') }}">
-                        <img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_large_noborder.png"
-                             alt="Sign in with Steam" class="w-48 h-auto transition-all duration-500 hover:scale-110">
-                    </a>
+                <a href="{{ path('steam_connect') }}">
+                    <img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_large_noborder.png"
+                         alt="Sign in with Steam"
+                         class="max-w-full max-h-64 w-auto h-auto transition-all duration-500 hover:scale-110">
+                </a>
                 </div>
                 {% endif %}
             </div>
