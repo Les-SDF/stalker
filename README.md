@@ -81,21 +81,21 @@ Une barre de navigation (nav bar) est présente sur toutes les pages, offrant le
 
 # Routes de l'application
 
-| Méthode      | Route                                                                                                                        | Description                                     |
-|--------------|------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------|
-| GET          | [`/`](http://localhost:80/stalker/public/)                                                                                   | Page d'accueil                                  |
-| GET          | [`/users`](http://localhost:80/stalker/public/sign-in)                                                                       | Page recensant les utilisateurs                 |
-| GET          | [`/users/{profilCode}`](http://localhost:80/stalker/public/sign-in)                                                          | Page d'accès aux comptes                        |
-| GET          | [`/users/{profileCode}/json`](http://localhost:80/stalker/public/sign-in)                                                    | Page d'affichage des données utilisateur        |
-| GET, POST    | [`/account/update`](http://localhost:80/stalker/public/account/update)                                                       | Action de modification d'un utilisateur         |
-| DELETE       | [`/account/delete`](http://localhost:80/stalker/public/account/delete)                                                       | Action de suppression d'un utilisateur          |
-| POST         | [`/account/update-profile-code`](http://localhost:80/stalker/public/account/update-profile-code)                             | Action de modification d'un code utilisateur    |
-| POST         | [`/api/users/check-profile-code-availability`](http://localhost:80/stalker/public/api/users/check-profile-code-availability) | Vérification de la disponibilité d'un code      |
-| POST         | [`/users/{profileCode}/reset-profile-code`](http://localhost:80/stalker/public/users/{profileCode}/reset-profile-code)       | Régénération d'un code par défaut               |
-| GET          | [`/steam/connect`](http://localhost:80/stalker/public/steam/connect)                                                         | Action de connexion à Steam                     |
-| GET          | [`/steam/check`](http://localhost:80/stalker/public/steam/check)                                                             | Action de liaison entre Steam et l'utilisateur  |
-| POST         | [`/sign-up`](http://localhost:80/stalker/public/sign-up)                                                                     | Action d'inscription                            |
-| POST         | [`/sign-in`](http://localhost:80/stalker/public/sign-in)                                                                     | Action de connexion                             |
+| Méthode     | Route                                                                                                                        | Description                                     |
+|-------------|------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------|
+| GET         | [`/`](http://localhost:80/stalker/public/)                                                                                   | Page d'accueil                                  |
+| GET         | [`/users`](http://localhost:80/stalker/public/sign-in)                                                                       | Page recensant les utilisateurs                 |
+| GET         | [`/users/{profilCode}`](http://localhost:80/stalker/public/sign-in)                                                          | Page d'accès aux comptes                        |
+| GET         | [`/users/{profileCode}/json`](http://localhost:80/stalker/public/sign-in)                                                    | Page d'affichage des données utilisateur        |
+| GET, POST   | [`/account/update`](http://localhost:80/stalker/public/account/update)                                                       | Action de modification d'un utilisateur         |
+| GET, DELETE | [`/account/{profileCode}/delete`](http://localhost:80/stalker/public/account/{profileCode}/delete)                           | Action de suppression d'un utilisateur          |
+| POST        | [`/account/update-profile-code`](http://localhost:80/stalker/public/account/update-profile-code)                             | Action de modification d'un code utilisateur    |
+| POST        | [`/api/users/check-profile-code-availability`](http://localhost:80/stalker/public/api/users/check-profile-code-availability) | Vérification de la disponibilité d'un code      |
+| POST        | [`/users/{profileCode}/reset-profile-code`](http://localhost:80/stalker/public/users/{profileCode}/reset-profile-code)       | Régénération d'un code par défaut               |
+| GET         | [`/steam/connect`](http://localhost:80/stalker/public/steam/connect)                                                         | Action de connexion à Steam                     |
+| GET         | [`/steam/check`](http://localhost:80/stalker/public/steam/check)                                                             | Action de liaison entre Steam et l'utilisateur  |
+| POST        | [`/sign-up`](http://localhost:80/stalker/public/sign-up)                                                                     | Action d'inscription                            |
+| POST        | [`/sign-in`](http://localhost:80/stalker/public/sign-in)                                                                     | Action de connexion                             |
 
 # Commande
 
