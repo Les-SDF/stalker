@@ -106,16 +106,23 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/users/check-profile-code-availability', name: 'check_profile_code_availability', options: ['expose' => true], methods: ['POST'])]
-    public function checkProfileCodeAvailability(Request              $request,
-                                                 UserManagerInterface $userManager): Response
+    #[Route('/api/users/check-profile-code-availability', name: 'check_profile_code_availability', options: ['expose' => true], methods: ['POST'])]
+    public function checkProfileCodeAvailability(Request $request, UserManagerInterface $userManager): Response
     {
-        return $this->json([
-            'is_available' => $userManager->isProfileCodeAvailable(
-                profileCode: json_decode($request->getContent(), true)['profileCode']
-            )
-        ]);
+        try {
+            $data = json_decode($request->getContent(), true);
+            if (!isset($data['profileCode'])) {
+                return $this->json(['error' => 'Profile code not provided'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $isAvailable = $userManager->isProfileCodeAvailable($data['profileCode']);
+
+            return $this->json(['is_available' => $isAvailable], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return $this->json(['error' => 'An error occurred: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
+
 
     /**
      * @throws RandomException
