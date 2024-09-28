@@ -100,8 +100,8 @@ class UserFixtures extends Fixture
         $louis->setPassword($this->passwordHasher->hashPassword($louis, 'Password123'));
         $louis->setFirstname('Louis');
         $louis->setLastname('Texier');
-        $louis->setSexuality(Sexuality::Homosexual);
-        $louis->setGender(Gender::Esspigender);
+        $louis->setSexuality(Sexuality::Lesbian);
+        $louis->setGender(Gender::Helicoptere_de_combat);
         $louis->setVisibility(Visibility::Public);
         $louis->setPhoneNumber('0612345678');
         $louis->setCountryCode('FR');

@@ -371,6 +371,11 @@ enum Gender: string
      */
     case Healgender = 'healgender';
 
+    /**
+     * A gender identity that gives the person the capacity to fly.
+     */
+    case Helicoptere_de_combat = 'helicoptere_de_combat';
+
     case Male = 'male';
 
     /**
