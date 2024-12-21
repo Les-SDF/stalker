@@ -15,6 +15,18 @@ DirectoryIndex index.php
     Options -MultiViews
 </IfModule>
 
+<IfModule mod_headers.c>
+    # CORS headers
+    Header set Access-Control-Allow-Origin *
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+    
+    # Handle preflight requests
+    RewriteEngine On
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule ^(.*)$ $1 [R=200,L]
+</IfModule>
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
@@ -28,19 +40,6 @@ DirectoryIndex index.php
     # This is what makes it possible to host a Symfony application under a subpath,
     # such as example.com/subpath
 
-    # The convoluted rewrite condition means:
-    #   1. Match all current URI in the RewriteRule and backreference it using $0
-    #   2. Strip the request uri the per-dir path and use ir as REQUEST_URI.
-    #      This is documented in https://bit.ly/3zDm3SI ("What is matched?")
-    #   3. Evaluate the RewriteCond, assuming your DocumentRoot is /var/www/html,
-    #      this .htaccess is in the /var/www/html/public dir and your request URI
-    #      is /public/hello/world:
-    #      * strip per-dir prefix: /var/www/html/public/hello/world -> hello/world
-    #      * applying pattern '.*' to uri 'hello/world'
-    #      * RewriteCond: input='/public/hello/world::hello/world' pattern='^(/.+)/(.*)::\\2$' => matched
-    #   4. Execute the RewriteRule:
-    #      * The %1 in the RewriteRule flag E=BASE:%1 refers to the first group captured in the RewriteCond ^(/.+)/(.*)
-    #      * setting env variable 'BASE' to '/public'
     RewriteCond %{REQUEST_URI}::$0 ^(/.+)/(.*)::\2$
     RewriteRule .* - [E=BASE:%1]
 
@@ -66,7 +65,7 @@ DirectoryIndex index.php
     </IfModule>
 </IfModule>
 
- <Limit GET POST PUT PATCH DELETE>
+<Limit GET POST PUT PATCH DELETE>
      Order deny,allow
      Require all granted
- </Limit>
+</Limit>
